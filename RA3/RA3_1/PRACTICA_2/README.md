@@ -19,6 +19,11 @@ Mapeamos el puerto 8080 para HTTP y el 8081 para HTTPS (puerto 443 interno):
 
 `docker run -d --name pps-pr2-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr2:latest`
 
+**Paso 3: Visualizar contenedor activo**
+Comprobamos que el contenedor se encuentra corriendo y está operativo:
+
+`docker ps`
+
 ### 3. Validación y Auditoría
 
 Para verificar que el WAF está operativo y bloqueando amenazas, realizamos una prueba de ataque simulado:
