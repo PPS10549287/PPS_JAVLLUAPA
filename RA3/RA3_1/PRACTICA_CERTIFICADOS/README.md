@@ -1,4 +1,4 @@
-# Práctica 5: Instalación de Certificado Digital SSL/TLS en Apache
+# Práctica X: Instalación de Certificado Digital SSL/TLS en Apache
 
 ### 1. Explicación
 En esta práctica se ha implementado la capa de transporte seguro (SSL/TLS) sobre la infraestructura ya blindada en las prácticas anteriores, culminando la arquitectura de "Defensa en Profundidad":
