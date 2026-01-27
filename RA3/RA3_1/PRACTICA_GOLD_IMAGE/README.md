@@ -21,6 +21,32 @@ Se ha utilizado el comando `sed` exclusivamente para modificar el archivo `/etc/
 * **Razón:** En distribuciones basadas en Debian, el usuario que ejecuta Apache se define en este archivo. El uso de `sed` es la forma más eficiente de realizar este cambio de identidad de forma persistente sin tener que sobrescribir el archivo completo del sistema.
 
 ### C. Contenido del Dockerfile
+
+Básicamente, lo que he montado aquí es un proceso de Hardening para asegurar que nuestra instancia de Apache no salga a producción con la configuración por defecto, que suele ser bastante insegura.
+
+1. El principio de "Menor Privilegio"
+Lo primero que hago es crear un usuario y un grupo específicos (apache). Nunca queremos que el servicio corra como root. Si alguien consigue entrar, se va a quedar encerrado en un usuario sin permisos de administrador, lo que nos da una capa de protección vital.
+
+2. Inyectando nuestra "Gold Image"
+He preparado un archivo de configuración (geekflare-hardening.conf) que contiene todas las mejores prácticas de seguridad. Lo copio directamente al directorio de configuraciones disponibles de Apache para que sea nuestra base de confianza.
+
+3. Activando las herramientas de defensa
+Aquí activo un par de módulos que son fundamentales:
+
+Rewrite: Para gestionar redirecciones (como forzar todo a HTTPS).
+
+Headers: Para inyectar cabeceras de seguridad que protejan al usuario de ataques como XSS o Clickjacking. Luego, con a2enconf, dejo activa nuestra configuración de "Gold Image".
+
+4. Forzando al sistema a usar nuestro usuario
+Apache tiene un archivo de variables de entorno (envvars) donde define quién lo ejecuta. Uso un par de comandos sed para buscar esas variables y reemplazarlas por nuestro nuevo usuario apache. Así me aseguro de que, al arrancar, el servidor no intente usar el usuario por defecto de la distro.
+
+5. Ajuste fino de permisos
+Finalmente, cierro el círculo con la gestión de archivos:
+
+Le doy la propiedad al usuario apache de lo que realmente necesita tocar: los logs y la carpeta de la web.
+
+Restrinjo el acceso a la carpeta de configuración (/etc/apache2/) con un chmod 750 para que nadie que no deba estar ahí pueda husmear o modificar archivos críticos.
+
 > [!IMPORTANT]
 > <img width="984" height="550" alt="image" src="https://github.com/user-attachments/assets/e0f3d169-53e3-4029-86c8-2a2f8534a2ec" />
 
