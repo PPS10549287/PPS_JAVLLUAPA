@@ -68,6 +68,7 @@ Para detener y borrar el contenedor de prueba ejecutamos:
 
 > [!IMPORTANT]
 > Resultado esperado:
+>
 > <img width="490" height="121" alt="image" src="https://github.com/user-attachments/assets/30c034c3-a331-48d1-9230-3183eef70973" />
 
 
