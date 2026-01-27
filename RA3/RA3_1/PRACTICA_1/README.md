@@ -37,7 +37,8 @@ Verificación de Ocultación y Cabeceras (HTTP y HTTPS)
 # Comprobación de cabeceras en puerto 8080
 `curl -I http://localhost:8080`
 
-> [!IMPORTANT]Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
 > <img width="1083" height="280" alt="image" src="https://github.com/user-attachments/assets/e0c20f23-efe3-440e-98f1-64f0a05a264b" />
 
 > [!NOTE]
