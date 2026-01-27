@@ -19,14 +19,15 @@ Este repositorio utiliza una imagen preconfigurada alojada en Docker Hub. No nec
 
 `docker pull pps10549287/pps-pr1:latest`
 
-<img width="578" height="74" alt="image" src="https://github.com/user-attachments/assets/1dacb99b-54ff-4025-a70a-f94fb14392c7" />
-
 **Paso 2: Lanzar el contenedor**
 Mapeamos el puerto 8080 para HTTP y el 8081 para HTTPS (puerto 443 interno):
 
 `docker run -d --name pps-pr1-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr1:latest`
 
-<img width="1082" height="54" alt="image" src="https://github.com/user-attachments/assets/16a8542a-3dab-4562-9a2b-0a0a109c2e7b" />
+**Paso 3: Visualizar contenedor activo**
+Comprobamos que el contenedor se encuentra corriendo y está operativo:
+
+`docker ps`
 
 ### 3: Validación y Auditoría**
 
