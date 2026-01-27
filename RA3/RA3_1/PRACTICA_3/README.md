@@ -19,6 +19,11 @@ Mapeamos los puertos de servicio (8080 para HTTP y 8081 para HTTPS):
 
 `docker run -d --name pps-pr3-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr3:latest`
 
+**Paso 3: Visualizar contenedor activo**
+Comprobamos que el contenedor se encuentra corriendo y está operativo:
+
+`docker ps`
+
 ### 3. Validación y Auditoría
 
 Al contar con el Core Rule Set de OWASP, realizamos pruebas de intrusión para verificar la respuesta del firewall:
