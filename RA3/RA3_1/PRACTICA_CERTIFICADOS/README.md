@@ -43,6 +43,7 @@ Comprobamos que el servidor rechaza conexiones inseguras y fuerza el salto al pu
 
 > [!IMPORTANT]
 > Resultado esperado:
+> 
 > <img width="637" height="166" alt="image" src="https://github.com/user-attachments/assets/56e4da18-b1b7-43c6-8a2a-c0db88244d2b" />
 
 > [!NOTE]
