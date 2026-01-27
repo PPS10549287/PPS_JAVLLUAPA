@@ -17,7 +17,7 @@ Este repositorio utiliza una imagen preconfigurada alojada en Docker Hub. No nec
 
 **Paso 1: Descargar la imagen**
 
-`docker pull javi2332/pps_p1_javlluapa:latest`
+`docker pull pps10549287/pps-pr1:latest`
 
 **Paso 2: Lanzar el contenedor**
 Mapeamos el puerto 8080 para HTTP y el 8081 para HTTPS (puerto 443 interno):
