@@ -10,6 +10,30 @@ En esta práctica se ha implementado la capa de transporte seguro (SSL/TLS) sobr
 * **Cifrado SSL/TLS:** Generación de un certificado X.509 autofirmado de 2048 bits mediante OpenSSL, configurado para el dominio `www.midominioseguro.com`.
 * **Redirección Forzosa (HSTS):** Configuración de Apache para redirigir permanentemente todo el tráfico inseguro (HTTP/80) hacia el canal cifrado (HTTPS/443), garantizando la integridad y confidencialidad de los datos.
 
+### A. Contenido del Dockerfile
+En este punto, he tomado la base de la práctica anterior (que ya traía el WAF y el anti-DDoS) y me he centrado en asegurar que toda la comunicación sea privada y esté cifrada.
+
+1. Generación de identidad (Certificado SSL)
+Lo primero que hago es crear un "DNI" para nuestro servidor. Uso openssl para generar un certificado autofirmado de 2048 bits. Con esto, habilitamos el cifrado RSA para que la información que viaja entre el usuario y el servidor no pueda ser leída por terceros.
+
+2. Configuración del sitio seguro
+Copio el archivo default-ssl.conf para decirle a Apache exactamente cómo debe comportarse cuando alguien intente entrar de forma segura. Activo el módulo ssl y le indico al servidor que deje de usar la configuración por defecto (000-default.conf) para centrarse en nuestro sitio protegido.
+
+### B. Contenido de default-ssl.conf
+Este archivo es el cerebro del tráfico web y se divide en dos grandes misiones:
+
+Misión A: Redirección Forzosa (Puerto 80)
+He configurado un bloque que escucha por el puerto 80 (HTTP normal). Su única función es "cazar" a cualquiera que entre sin seguridad y mandarlo inmediatamente al puerto 443. Nadie se queda en el lado inseguro; es una redirección permanente.
+
+Misión B: El búnker HTTPS (Puerto 443)
+Aquí es donde ocurre la magia de la seguridad:
+
+Encendido del motor SSL: Activo el SSLEngine y le digo dónde están guardadas las llaves que generamos antes.
+
+HSTS (Seguridad Persistente): He añadido una cabecera de seguridad muy potente. El Strict-Transport-Security le dice al navegador del usuario: "A partir de ahora, aunque intentes entrar por HTTP, ni me preguntes; conecta siempre por HTTPS durante los próximos dos años". Esto evita ataques de degradación de SSL.
+
+Entorno Seguro: Finalmente, aseguro que incluso si ejecutamos scripts (PHP o CGI), estos se manejen bajo el estándar de variables de entorno seguras de SSL.
+
 ### 2. Guía de Despliegue
 
 **Paso 1: Configuración del entorno local (Host)**
