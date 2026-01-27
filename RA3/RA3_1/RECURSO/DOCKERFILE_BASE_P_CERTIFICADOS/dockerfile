@@ -1,0 +1,46 @@
+FROM debian:bullseye
+
+# 1. Instalación de paquetes (Apache, SSL, ModSecurity, Git)
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    openssl \
+    libapache2-mod-security2 \
+    git \
+    && apt-get clean
+
+# 2. Crear usuario y grupo 'apache' (como dice el artículo)
+RUN groupadd apache && useradd -g apache apache
+
+# 3. Generar Certificado SSL Auto-firmado (para el puerto 443)
+RUN mkdir -p /etc/apache2/ssl && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/apache2/ssl/apache.key \
+    -out /etc/apache2/ssl/apache.crt \
+    -subj "/C=ES/ST=Castellon/L=Castellon/O=Seguridad/CN=www.midominioseguro.com"
+
+# 4. Configurar ModSecurity y Reglas OWASP
+RUN cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf && \
+    sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf && \
+    git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /tmp/owasp-crs && \
+    mv /tmp/owasp-crs/crs-setup.conf.example /etc/modsecurity/crs-setup.conf && \
+    mv /tmp/owasp-crs/rules /etc/modsecurity/rules && \
+    rm -rf /tmp/owasp-crs
+
+# 5. Módulos y configuraciones
+COPY security-pro.conf /etc/apache2/conf-available/security-pro.conf
+COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+
+RUN a2enmod ssl headers rewrite security2 && \
+    a2enconf security-pro && \
+    a2ensite default-ssl.conf && \
+    a2dissite 000-default.conf
+
+# 6. Permisos de directorios (Paso del artículo: chmod 750)
+RUN chmod -R 750 /etc/apache2/ /usr/sbin/apache2
+
+# 7. Cambiar usuario de ejecución en Apache
+RUN sed -i 's/export APACHE_RUN_USER=.*/export APACHE_RUN_USER=apache/' /etc/apache2/envvars && \
+    sed -i 's/export APACHE_RUN_GROUP=.*/export APACHE_RUN_GROUP=apache/' /etc/apache2/envvars
+
+EXPOSE 80 443
+CMD ["apache2ctl", "-D", "FOREGROUND"]

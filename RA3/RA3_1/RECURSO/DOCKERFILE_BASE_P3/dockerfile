@@ -1,0 +1,36 @@
+FROM debian:bullseye
+
+# 1. Instalación de paquetes y limpieza en un solo paso
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    ssl-cert \
+    libapache2-mod-security2 \
+    git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Configuración de ModSecurity y descarga de Reglas OWASP CRS
+# Clonamos, movemos lo necesario y borramos la basura para ahorrar espacio
+RUN cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf \
+    && sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf \
+    && git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /tmp/owasp-crs \
+    && mv /tmp/owasp-crs/crs-setup.conf.example /etc/modsecurity/crs-setup.conf \
+    && mv /tmp/owasp-crs/rules /etc/modsecurity/rules \
+    && rm -rf /tmp/owasp-crs
+
+# 3. Copiar nuestras configuraciones de seguridad (HSTS, CSP y carga de reglas)
+COPY security2.conf /etc/apache2/mods-available/security2.conf
+COPY csp_hsts.conf /etc/apache2/conf-available/security-hardened.conf
+
+# 4. Endurecimiento (Hardening) y activación de módulos
+RUN a2dismod -f autoindex \
+    && a2disconf security \
+    && a2enmod ssl headers \
+    && a2enconf security-hardened \
+    && a2ensite default-ssl
+
+# 5. Puertos y ejecución
+EXPOSE 80 443
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+#Se ha quitado la regla testparam para no modificar el archivo 000-default.conf, además se eliminan archivos temporales y se han restructurado comandos para facilitar la lectura.

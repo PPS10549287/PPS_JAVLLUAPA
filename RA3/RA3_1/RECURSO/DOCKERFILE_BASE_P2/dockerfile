@@ -1,0 +1,30 @@
+FROM debian:bullseye
+
+# Instalar Apache, SSL y el módulo de ModSecurity
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    ssl-cert \
+    libapache2-mod-security2 \
+    && apt-get clean
+
+# 1. Hardening de la Práctica 1
+RUN a2dismod -f autoindex
+RUN a2disconf security
+RUN a2enmod ssl headers
+
+# 2. Configuración de ModSecurity (Práctica 2)
+# Copiamos el archivo recomendado a la ubicación activa
+RUN cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+
+# IMPORTANTE: Por defecto ModSecurity viene en modo "DetectionOnly". 
+# Vamos a cambiarlo a "On" para que realmente bloquee ataques (403 Forbidden).
+RUN sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
+
+# 3. Aplicar las cabeceras personalizadas (HSTS, CSP)
+COPY csp_hsts.conf /etc/apache2/conf-available/security-hardened.conf
+RUN a2enconf security-hardened
+RUN a2ensite default-ssl
+
+EXPOSE 80 443
+
+CMD ["apache2ctl", "-D", "FOREGROUND"]
