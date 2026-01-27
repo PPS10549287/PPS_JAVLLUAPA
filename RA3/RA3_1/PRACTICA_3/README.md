@@ -7,6 +7,39 @@ Esta imagen aplica un nivel más de seguridad en la serie, heredando de la **P2 
 * **OWASP Core Rule Set (CRS):** Integración de reglas avanzadas para proteger contra el "Top 10" de riesgos de seguridad (SQLi, XSS, Local File Inclusion, etc.).
 * **Protección Inteligente:** El servidor ahora cuenta con una lógica de detección mucho más profunda y precisa gracias al repositorio oficial de `coreruleset`.
 
+### A. Contenido del Dockerfile
+Si en la práctica anterior instalamos el motor del firewall (ModSecurity), en esta fase le estamos instalando el "cerebro". Estamos configurando un WAF (Web Application Firewall) avanzado usando las reglas estándar de la industria.
+
+1. Preparación del entorno y persistencia
+He heredado la base de Hardening y ModSecurity, pero ahora añado un directorio de caché (/var/cache/modsecurity).
+
+Por qué es clave: ModSecurity necesita un lugar donde guardar datos temporales de las sesiones y las IPs. Si no creamos este directorio con los permisos correctos para www-data, el firewall daría error al intentar rastrear ataques complejos.
+
+2. Integración de OWASP CRS (Core Rule Set)
+He usado git para descargar directamente desde el repositorio oficial el conjunto de reglas de OWASP.
+
+Resolución: En lugar de usar versiones obsoletas, he clonado la última versión de coreruleset. He movido el archivo de configuración base (crs-setup.conf) y todas las reglas dinámicas a la carpeta de ModSecurity. Con esto, el servidor ya sabe reconocer ataques de Inyección SQL, Cross-Site Scripting (XSS) y mucho más.
+
+3. Orquestación de las reglas
+No basta con descargar las reglas; hay que decirle a Apache en qué orden leerlas. Para eso he sobrescrito el archivo security2.conf. Lo bueno es que, gracias a la herencia de Docker, todo lo que configuramos antes (SSL, HSTS, Hardening) sigue funcionando sin que tengamos que escribir ni una línea extra de código.
+
+> [!IMPORTANT]
+> <img width="939" height="697" alt="image" src="https://github.com/user-attachments/assets/0b51fe63-ef18-46ee-9c46-8a204176047d" />
+
+### B. Contenido del fichero security2.conf
+Este archivo es el "director de orquesta" del firewall. Define el orden lógico para que no haya conflictos:
+
+SecRuleEngine On: Me aseguro de que el motor no solo esté instalado, sino activo. Sin esto, el firewall estaría en modo "solo lectura" o apagado.
+
+Configuración Base: Primero cargo modsecurity.conf. Aquí están las reglas genéricas y la configuración de logs que definimos en la práctica anterior.
+
+Configuración de OWASP (crs-setup.conf): Antes de aplicar las reglas de ataque, cargo este archivo que define los umbrales de puntuación (qué tan "malo" debe ser un comportamiento para bloquearlo).
+
+Inyección de Reglas (rules/*.conf): Finalmente, cargo el grueso de las reglas de OWASP. Es el último paso porque estas reglas utilizan toda la configuración cargada en los puntos anteriores para decidir si bloquean o permiten una petición.
+
+> [!IMPORTANT]
+> <img width="696" height="365" alt="image" src="https://github.com/user-attachments/assets/ecca2b90-5552-4438-9b48-e98b420b201d" />
+
 ### 2. Guía de Despliegue
 Este repositorio utiliza la imagen final con el conjunto de reglas OWASP ya preconfigurado y optimizado para su carga.
 
