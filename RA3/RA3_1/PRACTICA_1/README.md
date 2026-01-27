@@ -19,10 +19,14 @@ Este repositorio utiliza una imagen preconfigurada alojada en Docker Hub. No nec
 
 `docker pull pps10549287/pps-pr1:latest`
 
+<img width="578" height="74" alt="image" src="https://github.com/user-attachments/assets/1dacb99b-54ff-4025-a70a-f94fb14392c7" />
+
 **Paso 2: Lanzar el contenedor**
 Mapeamos el puerto 8080 para HTTP y el 8081 para HTTPS (puerto 443 interno):
 
 `docker run -d --name pps-pr1-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr1:latest`
+
+<img width="1082" height="54" alt="image" src="https://github.com/user-attachments/assets/16a8542a-3dab-4562-9a2b-0a0a109c2e7b" />
 
 ### 3: Validación y Auditoría**
 
@@ -44,7 +48,8 @@ Nota: Usamos -k porque los certificados son autofirmados.
 `curl -Ik https://localhost:8081`
 
 Resultado esperado:
-<img width="1083" height="280" alt="image" src="https://github.com/user-attachments/assets/f0371f0d-cf85-4e75-be64-ea6e586ef30c" />
+
+<img width="1081" height="274" alt="image" src="https://github.com/user-attachments/assets/20602d7b-4fa8-42d1-b202-6bcedffd4ddb" />
 
 *(La presencia de la cabecera `Strict-Transport-Security` confirma que el servidor obliga al navegador a mantener una conexión segura (HTTPS) durante el tiempo configurado).*
 
@@ -54,11 +59,12 @@ Resultado esperado:
 ### 5. Limpieza
 Para detener y borrar el contenedor de prueba ejecutamos:
 
-`docker stop harden_base`
+`docker stop pps-pr1-javlluapa`
 
-`docker rm -f harden_base`
+`docker rm pps-pr1-javlluapa`
 
 Resultado esperado:
 
-<img width="492" height="95" alt="image" src="https://github.com/user-attachments/assets/01e90834-7bee-4a13-84a7-c01dd353f8a5" />
+<img width="501" height="98" alt="image" src="https://github.com/user-attachments/assets/c26fcece-170c-40a3-954f-673e550ec5fe" />
+
 
