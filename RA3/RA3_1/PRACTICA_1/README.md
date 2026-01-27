@@ -45,15 +45,17 @@ Verificación de Ocultación y Cabeceras (HTTP y HTTPS)
 > *En la respuesta se observa que el campo `Server` no revela la versión de Apache ni del SO, y se verifica la correcta implementación de la política `Content-Security-Policy`.*
 
 # Comprobación de puerto seguro (HSTS) en puerto 8081
-Nota: Usamos -k porque los certificados son autofirmados.
+> [!NOTE]
+> *Usamos -k porque los certificados son autofirmados.*
 
 `curl -Ik https://localhost:8081`
 
-Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="1081" height="274" alt="image" src="https://github.com/user-attachments/assets/20602d7b-4fa8-42d1-b202-6bcedffd4ddb" />
 
-<img width="1081" height="274" alt="image" src="https://github.com/user-attachments/assets/20602d7b-4fa8-42d1-b202-6bcedffd4ddb" />
-
-*(La presencia de la cabecera `Strict-Transport-Security` confirma que el servidor obliga al navegador a mantener una conexión segura (HTTPS) durante el tiempo configurado).*
+> [!NOTE]
+> *La presencia de la cabecera `Strict-Transport-Security` confirma que el servidor obliga al navegador a mantener una conexión segura (HTTPS) durante el tiempo configurado.*
 
 ### 4. URL Docker Hub
 `docker pull pps10549287/pps-pr1:latest`
