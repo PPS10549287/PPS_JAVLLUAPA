@@ -7,6 +7,26 @@ Esta imagen hereda de la **P1 (Hardening de Apache)** y añade una capa de defen
 * **ModSecurity:** Instalación y activación del motor en modo bloqueo (`SecRuleEngine On`).
 * **Protección Activa:** El servidor ahora es capaz de interceptar peticiones maliciosas antes de que lleguen a la aplicación.
 
+### A. Contenido del Dockerfile
+En este paso, el objetivo es dejar de ser "pasivos". Ya tenemos un servidor robusto por fuera (gracias al Hardening de la P1), pero ahora le estamos instalando un WAF (Web Application Firewall) para que analice el tráfico en tiempo real.
+
+1. Evolución sobre la base (Herencia)
+Lo primero es que no empezamos de cero. Heredo la imagen pps-pr1, lo que significa que ya traigo "gratis" toda la configuración de SSL, HSTS y las cabeceras de seguridad que configuré antes. Solo me preocupo de añadir la capa de protección de aplicación.
+
+2. Instalación del motor de seguridad
+Instalo el módulo libapache2-mod-security2. Este es el motor que nos va a permitir inspeccionar qué viene dentro de las peticiones HTTP (como parámetros de formularios o cookies) para detectar ataques que un firewall normal no vería.
+
+3. Del modo "Detección" al modo "Bloqueo"
+Este es el punto más importante de mi script. Por defecto, ModSecurity viene configurado para "solo mirar" (DetectionOnly), lo cual no sirve de mucho en producción.
+
+Lo que he hecho: He usado sed para cambiar esa directiva a SecRuleEngine On. Ahora, si el firewall detecta algo sospechoso, no solo lo anotará en el log, sino que cortará la conexión inmediatamente.
+
+4. Activación en el servidor
+Finalmente, habilito el módulo en Apache con a2enmod. Como ya tengo los puertos 80 y 443 abiertos y el comando de arranque configurado de la práctica anterior, el contenedor está listo para filtrar ataques desde el segundo uno.
+
+> [!IMPORTANT]
+> <img width="696" height="365" alt="image" src="https://github.com/user-attachments/assets/19258c5e-cc01-4440-bab7-6ebed65f3463" />
+
 ### 2. Guía de Despliegue
 Este repositorio utiliza una imagen preconfigurada alojada en Docker Hub. Al heredar de la P1, los ajustes de endurecimiento y el firewall ya están integrados en la imagen.
 
