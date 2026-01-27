@@ -19,6 +19,9 @@ Lo primero que hago es crear un "DNI" para nuestro servidor. Uso openssl para ge
 2. Configuración del sitio seguro
 Copio el archivo default-ssl.conf para decirle a Apache exactamente cómo debe comportarse cuando alguien intente entrar de forma segura. Activo el módulo ssl y le indico al servidor que deje de usar la configuración por defecto (000-default.conf) para centrarse en nuestro sitio protegido.
 
+> [!IMPORTANT]
+> <img width="827" height="500" alt="image" src="https://github.com/user-attachments/assets/302e8ce5-5d0e-4cd2-9d36-dedb45d0c97e" />
+
 ### B. Contenido de default-ssl.conf
 Este archivo es el cerebro del tráfico web y se divide en dos grandes misiones:
 
@@ -33,6 +36,9 @@ Encendido del motor SSL: Activo el SSLEngine y le digo dónde están guardadas l
 HSTS (Seguridad Persistente): He añadido una cabecera de seguridad muy potente. El Strict-Transport-Security le dice al navegador del usuario: "A partir de ahora, aunque intentes entrar por HTTP, ni me preguntes; conecta siempre por HTTPS durante los próximos dos años". Esto evita ataques de degradación de SSL.
 
 Entorno Seguro: Finalmente, aseguro que incluso si ejecutamos scripts (PHP o CGI), estos se manejen bajo el estándar de variables de entorno seguras de SSL.
+
+> [!IMPORTANT]
+> <img width="897" height="779" alt="image" src="https://github.com/user-attachments/assets/6647c8eb-5fd0-44cc-a0ab-2842672cf589" />
 
 ### 2. Guía de Despliegue
 
