@@ -21,7 +21,8 @@ Se ha utilizado el comando `sed` exclusivamente para modificar el archivo `/etc/
 * **Razón:** En distribuciones basadas en Debian, el usuario que ejecuta Apache se define en este archivo. El uso de `sed` es la forma más eficiente de realizar este cambio de identidad de forma persistente sin tener que sobrescribir el archivo completo del sistema.
 
 ### C. Contenido del Dockerfile
-<img width="984" height="550" alt="image" src="https://github.com/user-attachments/assets/e0f3d169-53e3-4029-86c8-2a2f8534a2ec" />
+> [!IMPORTANT]
+> <img width="984" height="550" alt="image" src="https://github.com/user-attachments/assets/e0f3d169-53e3-4029-86c8-2a2f8534a2ec" />
 
 ## 3. El Archivo Externo: `geekflare-hardening.conf`
 Este archivo actúa como el "escudo final" del servidor. Su función es centralizar las directivas de seguridad avanzada que no se cubrieron en fases previas:
