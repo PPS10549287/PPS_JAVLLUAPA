@@ -7,6 +7,10 @@ Esta imagen representa la capa final de la arquitectura de seguridad, heredando 
 * **mod_evasive:** Implementación de un módulo de detección activa que rastrea IPs sospechosas basándose en la frecuencia de sus peticiones a nivel de aplicación.
 * **Umbrales de Bloqueo:** Configurado para detectar ráfagas de más de 5 peticiones por segundo a una misma página, bloqueando la IP automáticamente con un código **403 Forbidden** para preservar la disponibilidad del servidor.
 
+### A. Contenido del Dockerfile
+
+### B. Contenido del archivo 
+
 ### 2. Guía de Despliegue
 Este repositorio contiene la suite completa de seguridad activa y probada en un entorno contenedorizado.
 
