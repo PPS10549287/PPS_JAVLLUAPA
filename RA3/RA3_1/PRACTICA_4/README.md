@@ -95,6 +95,7 @@ Para detener y borrar el entorno completo de prueba:
 `docker rm -f pps_p4_full`
 
 > [!IMPORTANT]
+>
 > Resultado esperado:
 > <img width="503" height="99" alt="image" src="https://github.com/user-attachments/assets/bb29a1b6-49a0-424f-98d2-01730fea8782" />
 
