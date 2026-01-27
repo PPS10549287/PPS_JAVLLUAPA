@@ -3,7 +3,7 @@
 ### 1. Explicación
 Esta imagen representa la capa final de la arquitectura de seguridad, heredando la robustez de la **P3 (OWASP CRS)** y añadiendo un escudo especializado contra ataques de Denegación de Servicio (DoS) y fuerza bruta:
 
-* **Estrategia en cascada:** Basada en la imagen `pps10549287/pps-pr4`, mantiene el Hardening (P1), el motor ModSecurity (P2) y las reglas de OWASP (P3).
+* **Estrategia en cascada:** Basada en la imagen `pps10549287/pps-pr3`, mantiene el Hardening (P1), el motor ModSecurity (P2) y las reglas de OWASP (P3).
 * **mod_evasive:** Implementación de un módulo de detección activa que rastrea IPs sospechosas basándose en la frecuencia de sus peticiones a nivel de aplicación.
 * **Umbrales de Bloqueo:** Configurado para detectar ráfagas de más de 5 peticiones por segundo a una misma página, bloqueando la IP automáticamente con un código **403 Forbidden** para preservar la disponibilidad del servidor.
 
