@@ -13,7 +13,7 @@ La imagen sigue una **estratia de herencia en cascada**, garantizando que este c
 Para esta fase final, se ha optado por un enfoque de **"Cirugía y Modularidad"** en lugar de sustitución completa:
 
 ### A. Uso de Archivo de Configuración Externo (`a2enconf`)
-En lugar de inyectar decenas de líneas mediante comandos `echo` en el archivo principal, se ha creado el archivo `gold-image-hardening.conf`. 
+En lugar de inyectar decenas de líneas mediante comandos `echo` en el archivo principal, se ha creado el archivo `geekflare-hardening.conf`. 
 * **Razón:** Esto permite mantener la herencia de las prácticas anteriores intacta. Al usar `a2enconf`, Apache carga estas nuevas reglas de seguridad de forma modular, permitiendo una auditoría más clara y evitando errores de sintaxis en el archivo maestro `apache2.conf`.
 
 ### B. Uso de `sed` para Variables de Envorno
@@ -22,7 +22,7 @@ Se ha utilizado el comando `sed` exclusivamente para modificar el archivo `/etc/
 
 
 
-## 3. El Archivo Externo: `gold-image-hardening.conf`
+## 3. El Archivo Externo: `geekflare-hardening.conf`
 Este archivo actúa como el "escudo final" del servidor. Su función es centralizar las directivas de seguridad avanzada que no se cubrieron en fases previas:
 
 * **Hardening de Protocolo:** Incluye `TraceEnable Off` y `FileETag None` para evitar ataques de Cross-Site Tracing y fugas de información del inodo del sistema.
