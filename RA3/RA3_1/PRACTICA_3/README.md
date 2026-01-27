@@ -85,7 +85,7 @@ Para detener y borrar el contenedor de prueba ejecutamos:
 
 `docker rm pps-pr3-javlluapa`
 
-Resultado esperado:
-
-<img width="498" height="92" alt="image" src="https://github.com/user-attachments/assets/4b601ee2-a2f1-4c90-b389-62c3d71b866a" />
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="498" height="92" alt="image" src="https://github.com/user-attachments/assets/4b601ee2-a2f1-4c90-b389-62c3d71b866a" />
 
