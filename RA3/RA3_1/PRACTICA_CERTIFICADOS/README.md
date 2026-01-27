@@ -3,7 +3,7 @@
 ### 1. Explicación
 En esta práctica se ha implementado la capa de transporte seguro (SSL/TLS) sobre la infraestructura ya blindada en las prácticas anteriores, culminando la arquitectura de "Defensa en Profundidad":
 
-* **Estrategia en cascada:** Basada en la imagen `javi2332/pps_p4_javlluapa`, integrando Hardening (P1), ModSecurity (P2), OWASP CRS (P3) y protección DoS (P4).
+* **Estrategia en cascada:** Basada en la imagen `pps10549287/pps-pr4`, integrando Hardening (P1), ModSecurity (P2), OWASP CRS (P3) y protección DoS (P4).
 * **Activación de HSTS:** Con la instalación del certificado SSL/TLS, la cabecera `Strict-Transport-Security` configurada previamente pasa a ser funcional, obligando a los navegadores a utilizar exclusivamente el puerto 443.
 > [!IMPORTANT]
 > **Cierre del ciclo de Hardening (P1):** La implementación de este certificado SSL/TLS es el requisito técnico indispensable para que la cabecera **HSTS (HTTP Strict Transport Security)**, configurada originalmente en la Práctica 1, sea efectiva. Con este paso, el servidor no solo solicita conexiones seguras, sino que el navegador tiene la infraestructura necesaria para acatar dicha política de seguridad.
