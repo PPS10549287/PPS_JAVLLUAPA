@@ -12,12 +12,12 @@ Este repositorio utiliza la imagen final con el conjunto de reglas OWASP ya prec
 
 **Paso 1: Descargar la imagen**
 
-`docker pull javi2332/pps_p3_javlluapa:latest`
+`docker pull pps10549287/pps-pr3:latest`
 
 **Paso 2: Lanzar el contenedor**
 Mapeamos los puertos de servicio (8080 para HTTP y 8081 para HTTPS):
 
-`docker run -d --name pps_p3_owasp -p 8080:80 -p 8081:443 javi2332/pps_p3_javlluapa:latest`
+`docker run -d --name pps-pr3-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr3:latest`
 
 ### 3. Validación y Auditoría
 
@@ -27,61 +27,65 @@ Al contar con el Core Rule Set de OWASP, realizamos pruebas de intrusión para v
 
 `curl -I "http://localhost:8080/?exec=/../../"`
 
-Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="651" height="144" alt="image" src="https://github.com/user-attachments/assets/4f59283e-f207-4cc6-acca-a10288c97785" />
 
-<img width="664" height="177" alt="image" src="https://github.com/user-attachments/assets/9f982ccc-b3ab-4e5a-8661-92b10eeb036d" />
-
-*(El código **403 Forbidden** confirma que las reglas de OWASP han identificado el patrón de navegación prohibida por directorios).*
+> [!NOTE]
+> *El código **403 Forbidden** confirma que las reglas de OWASP han identificado el patrón de navegación prohibida por directorios.*
 
 **B. Bloqueo de ataque avanzado (Command Injection)**
 
 `curl -I "http://localhost:8080/?exec=/bin/bash"`
 
-Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="672" height="144" alt="image" src="https://github.com/user-attachments/assets/d66dad38-4a9b-48cb-bd29-e995f972446a" />
 
-<img width="683" height="153" alt="image" src="https://github.com/user-attachments/assets/516c7b20-186f-4569-b36b-784fa2c0f817" />
-
-
-*(El código **403 Forbidden** confirma que las reglas de OWASP han identificado el patrón de navegación prohibida por directorios).*
+> [!NOTE]
+> *El código **403 Forbidden** confirma que las reglas de OWASP han identificado el patrón de navegación prohibida por directorios.*
 
 **C. Visualización de Logs (Auditoría de OWASP)**
 Para ver cómo el servidor "caza" el ataque en tiempo real:
 
-`docker exec pps_p3_owasp tail -f /var/log/apache2/error.log`
+`docker exec pps-p3-javlluapa tail -f /var/log/apache2/error.log`
 
-Resultado esperado (Ataque 1):
+> [!IMPORTANT]
+> Resultado esperado (Ataque 1):
+> <img width="1185" height="1081" alt="image" src="https://github.com/user-attachments/assets/71b3a817-8b37-427e-8ec0-aeae86497458" />
 
-<img width="1932" height="871" alt="image" src="https://github.com/user-attachments/assets/07ddd81b-7fe8-4292-b7d4-799d43ce982e" />
+> [!NOTE]
+> *En los logs se puede observar el ID de la regla de OWASP activada y la descripción detallada del ataque bloqueado.*
 
-*(En los logs se puede observar el ID de la regla de OWASP activada y la descripción detallada del ataque bloqueado).*
+> [!IMPORTANT]
+> Resultado esperado (Ataque 2):
+> <img width="1177" height="410" alt="image" src="https://github.com/user-attachments/assets/d418a5b5-4750-4392-9279-dbca3567aca6" />
 
-Resultado esperado (Ataque 2):
-
-<img width="1918" height="449" alt="image" src="https://github.com/user-attachments/assets/a14e7966-8193-4aec-95ad-30b845851196" />
-
-*(En los logs se puede observar el ID de la regla de OWASP activada y la descripción detallada del ataque bloqueado).*
+> [!NOTE]
+> *En los logs se puede observar el ID de la regla de OWASP activada y la descripción detallada del ataque bloqueado.*
 
 **D. Verificación de persistencia del Hardening (Capa 1)**
 
 `curl -I http://localhost:8080`
 
-Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="1084" height="282" alt="image" src="https://github.com/user-attachments/assets/51c5574b-8309-4286-ad45-a3c5cd7adf1a" />
 
-<img width="1091" height="293" alt="image" src="https://github.com/user-attachments/assets/74222962-ef5c-4e19-b92f-edf4388eb5c5" />
-
-*(Se comprueba que la ocultación del servidor y las cabeceras de seguridad de la P1 siguen vigentes gracias a la herencia de imágenes).*
-
+> [!NOTE]
+> *Se comprueba que la ocultación del servidor y las cabeceras de seguridad de la P1 siguen vigentes gracias a la herencia de imágenes.*
 
 ### 4. URL Docker Hub
-`docker pull javi2332/pps_p3_javlluapa:latest`
+`docker pull pps10549287/pps-pr3:latest`
 
 ### 5. Limpieza
 Para detener y borrar el contenedor de prueba ejecutamos:
 
-`docker stop pps_p3_owasp`
+`docker stop pps-pr3-javlluapa`
 
-`docker rm -f pps_p3_owasp`
+`docker rm pps-pr3-javlluapa`
 
 Resultado esperado:
 
-<img width="499" height="99" alt="image" src="https://github.com/user-attachments/assets/2346d587-0627-4863-9ce2-c753f1b2e7a4" />
+<img width="498" height="92" alt="image" src="https://github.com/user-attachments/assets/4b601ee2-a2f1-4c90-b389-62c3d71b866a" />
+
