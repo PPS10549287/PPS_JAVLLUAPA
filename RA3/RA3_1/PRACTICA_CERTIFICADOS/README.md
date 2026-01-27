@@ -29,6 +29,11 @@ Para que el navegador y las herramientas de test reconozcan el dominio, es neces
 Mapeamos el puerto 8080 para HTTP y el 8081 para HTTPS (puerto 443 interno):
 `docker run -d --name pps-pr-cert-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr-cert:latest`
 
+**Paso 4: Visualizar contenedor activo**
+Comprobamos que el contenedor se encuentra corriendo y está operativo:
+
+`docker ps`
+
 ### 3. Validación y Auditoría
 
 **A. Verificación de Redirección HTTP -> HTTPS**
