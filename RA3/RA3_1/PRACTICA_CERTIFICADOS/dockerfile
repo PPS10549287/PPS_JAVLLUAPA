@@ -1,5 +1,5 @@
 # Heredamos de la P4 (ya incluye ModSecurity, OWASP y Evasive)
-FROM javi2332/pps_p4_javlluapa:latest
+FROM pps10549287/pps-pr4:latest
 
 # Creamos el directorio y generamos el certificado autofirmado
 RUN mkdir -p /etc/apache2/ssl && \

@@ -1,4 +1,4 @@
-FROM javi2332/pps_p5_javlluapa:latest
+FROM pps10549287/pps-pr-cert:latest
 
 # 1. Usuario del sistema
 RUN groupadd apache && useradd -g apache apache

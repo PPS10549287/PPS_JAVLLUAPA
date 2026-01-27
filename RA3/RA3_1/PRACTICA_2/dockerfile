@@ -1,5 +1,5 @@
 # Heredamos la primera imagen ya subida a Docker Hub
-FROM javi2332/pps_p1_javlluapa:latest
+FROM pps10549287/pps-pr1:latest
 
 # Solo instalamos el módulo de seguridad
 RUN apt-get update && apt-get install -y \
