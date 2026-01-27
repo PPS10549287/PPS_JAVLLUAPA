@@ -9,7 +9,7 @@ Esta imagen representa la capa final de la arquitectura de seguridad, heredando 
 
 ### A. Contenido del Dockerfile
 
-### B. Contenido del archivo 
+### B. Contenido del archivo evasive.conf
 
 ### 2. Guía de Despliegue
 Este repositorio contiene la suite completa de seguridad activa y probada en un entorno contenedorizado.
