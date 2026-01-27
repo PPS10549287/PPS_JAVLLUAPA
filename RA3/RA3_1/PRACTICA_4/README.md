@@ -19,6 +19,11 @@ Desplegamos el servicio mapeando los puertos de seguridad (8080 para HTTP y 8081
 
 `docker run -d --name pps-pr4-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr4:latest`
 
+**Paso 3: Visualizar contenedor activo**
+Comprobamos que el contenedor se encuentra corriendo y está operativo:
+
+`docker ps`
+
 ### 3. Validación y Auditoría
 
 Para demostrar la efectividad de la protección anti-DoS y la persistencia de las capas anteriores, realizamos las siguientes pruebas:
