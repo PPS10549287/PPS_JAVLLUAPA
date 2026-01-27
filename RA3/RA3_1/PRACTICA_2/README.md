@@ -3,7 +3,7 @@
 ### 1. Explicación
 Esta imagen hereda de la **P1 (Hardening de Apache)** y añade una capa de defensa activa mediante un **WAF (Web Application Firewall)**:
 
-* **Estrategia en cascada:** Se utiliza la imagen `pps10549287/pps-pr1:latest` como base, manteniendo CSP, HSTS y SSL.
+* **Estrategia en cascada:** Se utiliza la imagen `pps10549287/pps-pr1` como base, manteniendo CSP, HSTS y SSL.
 * **ModSecurity:** Instalación y activación del motor en modo bloqueo (`SecRuleEngine On`).
 * **Protección Activa:** El servidor ahora es capaz de interceptar peticiones maliciosas antes de que lleguen a la aplicación.
 
