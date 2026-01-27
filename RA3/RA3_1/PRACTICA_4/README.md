@@ -35,6 +35,7 @@ Utilizamos el script de prueba localizado en `/root/test.pl` que simula una inun
 
 > [!IMPORTANT]
 > Resultado esperado:
+>
 > <img width="683" height="491" alt="image" src="https://github.com/user-attachments/assets/171ac66f-875d-4d03-8f71-7f654c00bd79" />
 
 > [!NOTE]
