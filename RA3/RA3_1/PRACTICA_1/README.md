@@ -54,7 +54,7 @@ Resultado esperado:
 *(La presencia de la cabecera `Strict-Transport-Security` confirma que el servidor obliga al navegador a mantener una conexión segura (HTTPS) durante el tiempo configurado).*
 
 ### 4. URL Docker Hub
-`docker pull javi2332/pps_p1_javlluapa:latest`
+`docker pull pps10549287/pps-pr1:latest`
 
 ### 5. Limpieza
 Para detener y borrar el contenedor de prueba ejecutamos:
