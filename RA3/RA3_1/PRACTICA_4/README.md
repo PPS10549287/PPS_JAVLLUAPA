@@ -19,6 +19,9 @@ He creado un directorio específico para los logs de bloqueo en /var/log/mod_eva
 3. El script de testeo (Resolución de problemas)
 Aquí he sido resolutivo: el script original que solemos usar daba errores 400 (Bad Request). He programado un pequeño script en Perl (test.pl) que inyecta correctamente la cabecera Host: localhost. Esto nos permite simular una inundación de peticiones real y verificar que el módulo responde bloqueando el tráfico sospechoso.
 
+> [!IMPORTANT]
+> <img width="970" height="923" alt="image" src="https://github.com/user-attachments/assets/a9353f70-eea2-4d86-bf9e-4204530923ec" />
+
 ### B. Contenido del archivo evasive.conf
 Este es el "reglamento" que va a seguir el servidor para decidir quién es un atacante y quién es un usuario legítimo.
 
@@ -29,6 +32,9 @@ Detección por sitio (DOSSiteCount 100): Si una IP intenta descargar 100 recurso
 El castigo (DOSBlockingPeriod 10): En cuanto se superan esos umbrales, la IP entra en "la lista negra" durante 10 segundos. Si el atacante sigue insistiendo durante ese tiempo, el contador se reinicia, manteniéndolo fuera más tiempo.
 
 Memoria interna (DOSHashTableSize): He configurado una tabla de 2048 entradas para rastrear las IPs. Es un tamaño equilibrado que nos permite monitorizar a muchos usuarios sin consumir demasiada memoria RAM del contenedor.
+
+> [!IMPORTANT]
+> <img width="882" height="542" alt="image" src="https://github.com/user-attachments/assets/e5fedf91-3726-497c-99e7-ccf84baf512d" />
 
 ### 2. Guía de Despliegue
 Este repositorio contiene la suite completa de seguridad activa y probada en un entorno contenedorizado.
