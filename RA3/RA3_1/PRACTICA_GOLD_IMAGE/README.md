@@ -37,16 +37,26 @@ Este archivo actúa como el "escudo final" del servidor. Su función es centrali
 * **Hardening de Permisos:** Aplicación de permisos restrictivos (`750`) en directorios de configuración.
 * **Ocultación de Identidad:** Forzado de `ServerTokens Prod` para enmascarar la infraestructura.
 
-## 5. Validación de la Seguridad (Evidencias)
+### 5. Guía de Despliegue
+
+**Paso 1: Descargar la imagen**
+
+`docker pull pps10549287/pps-pr-gold:latest`
+
+**Paso 2: Lanzar el contenedor**
+
+`docker run -d --name pps-pr-gold-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr-gold:latest`
+
+## 6. Validación de la Seguridad (Evidencias)
 
 ### A. Prueba Maestra de Herencia y Prioridad de Capas
 Para validar que la Gold Image respeta la herencia de las prácticas anteriores y aplica correctamente el endurecimiento final, realizamos una búsqueda recursiva de directivas críticas en todo el árbol de configuración de Apache.
 
-**Comando:** `docker exec pps_gold_javlluapa grep -rE "ServerTokens|ServerSignature|FileETag|TraceEnable" /etc/apache2/`
+**Comando:** `docker exec pps-pr-gold-javlluapa grep -rE "ServerTokens|ServerSignature|FileETag|TraceEnable" /etc/apache2/`
 
 > [!IMPORTANT]
 > **Captura de evidencia (Capas):**
-> <img width="1297" height="318" alt="image" src="https://github.com/user-attachments/assets/c3ad2b35-91bb-44d6-85f5-af7508dd3b94" />
+> <img width="1291" height="318" alt="image" src="https://github.com/user-attachments/assets/acd30926-723a-48ff-bd42-0783764a58c3" />
 
 > [!NOTE]
 > **Interpretación:** El resultado del escaneo confirma la arquitectura de Defensa en Profundidad mediante la coexistencia de capas:
@@ -64,7 +74,7 @@ Realizamos una petición HTTPS para validar el stack completo de seguridad desde
 
 > [!IMPORTANT]
 > **Captura de evidencia (Cabeceras):**
-> <img width="1082" height="301" alt="image" src="https://github.com/user-attachments/assets/5656cccf-a11a-4963-84ff-95fae89def52" />
+> <img width="1087" height="294" alt="image" src="https://github.com/user-attachments/assets/e0c6196a-8f1e-42af-a8ef-3101b1b1c51b" />
 
 > [!NOTE]
 > **Interpretación:** El servidor responde con el banner oculto (`Server: Apache`), el mecanismo de transporte seguro activo (`Strict-Transport-Security`) y las nuevas protecciones contra Clickjacking y XSS. Se confirma que el servidor es "mudo" ante intentos de reconocimiento de versión.
@@ -72,11 +82,11 @@ Realizamos una petición HTTPS para validar el stack completo de seguridad desde
 ### C. Verificación de Usuario No Privilegiado
 Auditamos los procesos en ejecución para asegurar que el compromiso de un hilo de ejecución no otorgue acceso de superusuario al atacante.
 
-**Comando:** `docker exec pps_gold_javlluapa ps -ef | grep apache`
+**Comando:** `docker exec pps-pr-gold-javlluapa ps -ef | grep apache`
 
 > [!IMPORTANT]
 > **Captura de evidencia (Procesos):**
-> <img width="959" height="127" alt="image" src="https://github.com/user-attachments/assets/a6e00f42-8d37-4d70-b83d-1981aa5dab5e" />
+> <img width="956" height="125" alt="image" src="https://github.com/user-attachments/assets/020215c4-c64f-4edb-9415-bfbe08cc5681" />
 
 > [!NOTE]
 > **Interpretación:** Se observa cómo el proceso padre corre como `root` para gestionar los sockets de red, mientras que los procesos trabajadores (workers) que procesan el tráfico externo han cambiado su identidad al usuario **apache**, cumpliendo el principio de mínimo privilegio.
@@ -89,14 +99,14 @@ Validamos que las defensas activas de las prácticas anteriores (ModSecurity) si
 
 > [!IMPORTANT]
 > **Captura de evidencia (Persistencia):**
-> <img width="866" height="173" alt="image" src="https://github.com/user-attachments/assets/32e3fcf4-422c-451f-9903-f6ec73a37776" />
+> <img width="865" height="161" alt="image" src="https://github.com/user-attachments/assets/4ad1d5a8-8e99-4d1e-9c0c-02fdf3b2fa09" />
 
 > [!NOTE]
 > **Interpretación:** El servidor devuelve un **403 Forbidden**. Esto confirma que el motor ModSecurity (P2) y las reglas OWASP (P3) siguen inspeccionando el tráfico una vez descifrado por la capa SSL (P5), bloqueando el intento de intrusión.
 
 
 ## 6. URL Docker Hub (Golden Image)
-`docker pull javi2332/pps_gold_javlluapa:latest`
+`docker pull pps10549287/pps-pr-gold:latest`
 
 ## 7. Conclusión
 Este proyecto demuestra una arquitectura de **Defensa en Profundidad** real. Cada práctica ha añadido una capa de blindaje que la Golden Image final ha consolidado, resultando en un servidor Apache optimizado para resistir ataques modernos.
