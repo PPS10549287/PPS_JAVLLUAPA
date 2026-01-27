@@ -17,6 +17,8 @@ COPY evasive.conf /etc/apache2/mods-available/evasive.conf
 
 # 4. CREACIÓN DEL SCRIPT DE PRUEBA COMPATIBLE
 # Este script soluciona el error 400 añadiendo la cabecera Host obligatoria
+# (La justificación de añadir este error, se debe a problemas que estaba recibiendo con 
+# el script original, ante la situación preferí ser resolutivo).
 RUN echo 'use IO::Socket;\n\
 use strict;\n\
 print "Iniciando test de inundación (DoS)...\n";\n\
