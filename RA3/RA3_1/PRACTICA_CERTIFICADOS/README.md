@@ -17,17 +17,17 @@ Para que el navegador y las herramientas de test reconozcan el dominio, es neces
 
 `127.0.0.1  www.midominioseguro.com`
 
-Resultado esperado en la configuración:
-
-<img width="643" height="116" alt="image" src="https://github.com/user-attachments/assets/08c5a420-dac4-48cf-b95d-628b17a99a73" />
+> [!IMPORTANT]
+> Resultado esperado en la configuración:
+> <img width="643" height="116" alt="image" src="https://github.com/user-attachments/assets/08c5a420-dac4-48cf-b95d-628b17a99a73" />
 
 **Paso 2: Descargar la imagen**
 
-`docker pull javi2332/pps_p5_javlluapa:latest`
+`docker pull pps10549287/pps-pr-cert:latest`
 
 **Paso 3: Lanzar el contenedor**
 
-`docker run -d --name pps_p5_full -p 8080:80 -p 8081:443 javi2332/pps_p5_javlluapa:latest`
+`docker run -d --name pps-pr-cert-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr-cert:latest`
 
 ### 3. Validación y Auditoría
 
@@ -36,57 +36,68 @@ Comprobamos que el servidor rechaza conexiones inseguras y fuerza el salto al pu
 
 `curl -I http://localhost:8080`
 
-Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="637" height="166" alt="image" src="https://github.com/user-attachments/assets/56e4da18-b1b7-43c6-8a2a-c0db88244d2b" />
 
-<img width="636" height="180" alt="image" src="https://github.com/user-attachments/assets/4b28bc5e-60ad-45bd-90bd-9648e415c4c0" />
-
-*(El código **301 Moved Permanently** hacia https://www.midominioseguro.com/ confirma la política de transporte seguro).*
+> [!NOTE]
+> *El código **301 Moved Permanently** hacia https://www.midominioseguro.com/ confirma la política de transporte seguro.*
 
 **B. Inspección técnica del Certificado (Issuer)**
 Validamos que el certificado contiene los datos de identidad configurados durante la construcción (Castellón, Seguridad, etc.):
 
 `curl -Iv -k https://localhost:8081 2>&1 | grep "issuer"`
 
-Resultado esperado:
+>  [!IMPORTANT]
+> Resultado esperado:
+> <img width="845" height="55" alt="image" src="https://github.com/user-attachments/assets/a359e6f2-9a23-4749-bbda-a1a7e25f0653" />
 
-<img width="850" height="55" alt="image" src="https://github.com/user-attachments/assets/fafc0f7d-078e-4b3c-b162-cc9d6049da7f" />
-
-*(La línea `issuer: C=ES; ST=Castellon; L=Castellon; O=Seguridad; CN=www.midominioseguro.com` confirma la autoría del certificado).*
+> [!NOTE]
+> *La línea `issuer: C=ES; ST=Castellon; L=Castellon; O=Seguridad; CN=www.midominioseguro.com` confirma la autoría del certificado.*
 
 **C. Validación Visual en Navegador**
 Al acceder a `https://www.midominioseguro.com:8081`, se verifica el aviso de seguridad por certificado autofirmado y se inspeccionan los detalles:
 
-Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
+><img width="1029" height="1278" alt="image" src="https://github.com/user-attachments/assets/d392389a-4986-4d60-8dce-4cd2bf1f2ef0" />
 
-<img width="1029" height="1278" alt="image" src="https://github.com/user-attachments/assets/d392389a-4986-4d60-8dce-4cd2bf1f2ef0" />
-(Aviso de seguridad por certificado autofirmado)
+>  [!NOTE]
+> Aviso de seguridad por certificado autofirmado
 
-<img width="1029" height="1278" alt="image" src="https://github.com/user-attachments/assets/ebfa7317-c247-486c-be13-487802c0e574" />
-(Detalles del certificado)
+> [!IMPORTANT]
+> <img width="1029" height="1278" alt="image" src="https://github.com/user-attachments/assets/ebfa7317-c247-486c-be13-487802c0e574" />
 
-<img width="1111" height="1293" alt="image" src="https://github.com/user-attachments/assets/d017b8b0-ed97-418f-883a-551fa887e659" />
-(Página web en funcionamiento)
+> [!NOTE]
+> Detalles del certificado
+
+> [!IMPORTANT]
+> <img width="1111" height="1293" alt="image" src="https://github.com/user-attachments/assets/d017b8b0-ed97-418f-883a-551fa887e659" />
+
+> [!NOTE]
+> Página web en funcionamiento
 
 **D. Persistencia de Seguridad (WAF + DoS + Hardening)**
 Verificamos que las capas de las prácticas anteriores siguen activas bajo el túnel SSL:
 
 `curl -I -k "https://localhost:8081/?exec=/bin/bash"`
 
-Resultado esperado:
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="707" height="139" alt="image" src="https://github.com/user-attachments/assets/abdb97a7-2d65-4e89-86a2-0fb2f5a4faf0" />
 
-<img width="711" height="150" alt="image" src="https://github.com/user-attachments/assets/363fb87d-95f0-4c6b-b049-e708d6f30623" />
-
-*(El código **403 Forbidden** demuestra que ModSecurity sigue inspeccionando el tráfico una vez descifrado).*
+> [!NOTE]
+> *El código **403 Forbidden** demuestra que ModSecurity sigue inspeccionando el tráfico una vez descifrado.*
 
 ### 4. URL Docker Hub
-`docker pull javi2332/pps_p5_javlluapa:latest`
+`docker pull pps10549287/pps-pr-cert:latest`
 
 ### 5. Limpieza
 
-`docker stop pps_p5_full && docker rm -f pps_p5_full`
+`docker stop pps-pr-cert-javlluapa && docker rm -f pps-pr-cert-javlluapa`
 
-Resultado esperado:
-
-<img width="823" height="73" alt="image" src="https://github.com/user-attachments/assets/6d5c1b01-98ff-49b2-b5c9-26069f0dc718" />
+> [!IMPORTANT]
+> Resultado esperado:
+> <img width="914" height="118" alt="image" src="https://github.com/user-attachments/assets/8cf748f2-9b73-4c29-9b43-aff3b11f1bab" />
 
 
