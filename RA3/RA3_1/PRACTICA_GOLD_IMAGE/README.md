@@ -47,6 +47,11 @@ Este archivo actúa como el "escudo final" del servidor. Su función es centrali
 
 `docker run -d --name pps-pr-gold-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr-gold:latest`
 
+**Paso 3: Visualizar contenedor activo**
+Comprobamos que el contenedor se encuentra corriendo y está operativo:
+
+`docker ps`
+
 ## 6. Validación de la Seguridad (Evidencias)
 
 ### A. Prueba Maestra de Herencia y Prioridad de Capas
