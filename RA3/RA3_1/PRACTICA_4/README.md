@@ -8,8 +8,27 @@ Esta imagen representa la capa final de la arquitectura de seguridad, heredando 
 * **Umbrales de Bloqueo:** Configurado para detectar ráfagas de más de 5 peticiones por segundo a una misma página, bloqueando la IP automáticamente con un código **403 Forbidden** para preservar la disponibilidad del servidor.
 
 ### A. Contenido del Dockerfile
+En esta etapa, el objetivo es blindar el servidor contra ataques de denegación de servicio (DoS) y ataques de fuerza bruta. Básicamente, le estamos dando al servidor un "instinto de defensa" para que sepa cuándo alguien está intentando saturarlo.
+
+1. Instalación de la defensa (mod-evasive)
+He heredado todo el trabajo previo (Hardening y ModSecurity) y le he añadido el módulo mod-evasive. También instalo Perl, porque lo necesito para ejecutar el script de auditoría que he diseñado para probar que el bloqueo funciona de verdad.
+
+2. Preparación del terreno
+He creado un directorio específico para los logs de bloqueo en /var/log/mod_evasive. Es fundamental darle la propiedad a www-data para que Apache pueda escribir los registros de las IPs que decide banear en tiempo real.
+
+3. El script de testeo (Resolución de problemas)
+Aquí he sido resolutivo: el script original que solemos usar daba errores 400 (Bad Request). He programado un pequeño script en Perl (test.pl) que inyecta correctamente la cabecera Host: localhost. Esto nos permite simular una inundación de peticiones real y verificar que el módulo responde bloqueando el tráfico sospechoso.
 
 ### B. Contenido del archivo evasive.conf
+Este es el "reglamento" que va a seguir el servidor para decidir quién es un atacante y quién es un usuario legítimo.
+
+Detección por página (DOSPageCount 5): Si una IP pide la misma página más de 5 veces en un segundo, el servidor sospecha y la marca.
+
+Detección por sitio (DOSSiteCount 100): Si una IP intenta descargar 100 recursos de cualquier parte de nuestra web en un segundo, se activa la alarma.
+
+El castigo (DOSBlockingPeriod 10): En cuanto se superan esos umbrales, la IP entra en "la lista negra" durante 10 segundos. Si el atacante sigue insistiendo durante ese tiempo, el contador se reinicia, manteniéndolo fuera más tiempo.
+
+Memoria interna (DOSHashTableSize): He configurado una tabla de 2048 entradas para rastrear las IPs. Es un tamaño equilibrado que nos permite monitorizar a muchos usuarios sin consumir demasiada memoria RAM del contenedor.
 
 ### 2. Guía de Despliegue
 Este repositorio contiene la suite completa de seguridad activa y probada en un entorno contenedorizado.
