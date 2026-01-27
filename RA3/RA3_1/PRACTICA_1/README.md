@@ -37,10 +37,11 @@ Verificación de Ocultación y Cabeceras (HTTP y HTTPS)
 # Comprobación de cabeceras en puerto 8080
 `curl -I http://localhost:8080`
 
-Resultado esperado:
-<img width="1083" height="280" alt="image" src="https://github.com/user-attachments/assets/e0c20f23-efe3-440e-98f1-64f0a05a264b" />
+> [!IMPORTANT]Resultado esperado:
+> <img width="1083" height="280" alt="image" src="https://github.com/user-attachments/assets/e0c20f23-efe3-440e-98f1-64f0a05a264b" />
 
-*(En la respuesta se observa que el campo `Server` no revela la versión de Apache ni del SO, y se verifica la correcta implementación de la política `Content-Security-Policy`).*
+> [!NOTE]
+> *En la respuesta se observa que el campo `Server` no revela la versión de Apache ni del SO, y se verifica la correcta implementación de la política `Content-Security-Policy`.*
 
 # Comprobación de puerto seguro (HSTS) en puerto 8081
 Nota: Usamos -k porque los certificados son autofirmados.
