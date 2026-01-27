@@ -22,7 +22,7 @@ Este repositorio utiliza una imagen preconfigurada alojada en Docker Hub. No nec
 **Paso 2: Lanzar el contenedor**
 Mapeamos el puerto 8080 para HTTP y el 8081 para HTTPS (puerto 443 interno):
 
-`docker run -d --name harden_base -p 8080:80 -p 8081:443 javi2332/pps_p1_javlluapa:latest`
+`docker run -d --name pps-pr1-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr1:latest`
 
 ### 3: Validación y Auditoría**
 
