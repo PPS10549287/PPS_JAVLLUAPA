@@ -32,6 +32,10 @@ Este archivo actúa como el "escudo final" del servidor. Su función es centrali
 * **Forzado de HTTP 1.1:** Utiliza el motor de reescritura para rechazar peticiones que utilicen el protocolo HTTP 1.0, eliminando riesgos de seguridad heredados.
 * **Seguridad de Capa de Aplicación:** Define las cabeceras `X-Frame-Options` y `X-XSS-Protection` para proteger al cliente final.
 
+> [!IMPORTANT]
+> <img width="729" height="679" alt="image" src="https://github.com/user-attachments/assets/18aba9a7-51a2-47f5-a568-9a12704b97ee" />
+
+
 ## 4. Mejoras de Seguridad Implementadas (Capa Final)
 * **Usuario sin privilegios:** El servicio Apache se ejecuta bajo el usuario **apache**, aislándolo de `root`.
 * **Hardening de Permisos:** Aplicación de permisos restrictivos (`750`) en directorios de configuración.
