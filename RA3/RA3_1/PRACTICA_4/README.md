@@ -26,6 +26,7 @@ Aquí he tenido que ser resolutivo ya que el script original me causaba errores 
 > <img width="970" height="923" alt="image" src="https://github.com/user-attachments/assets/a9353f70-eea2-4d86-bf9e-4204530923ec" />
 
 ### B. Contenido del archivo evasive.conf
+
 La configuración de este fichero permite al servidor decidir quién es un atacante y quién es un usuario legítimo.
 
 Detección por página (`DOSPageCount 5`): Si una IP pide la misma página más de 5 veces en un segundo, el servidor sospecha y la marca como amenaza.
