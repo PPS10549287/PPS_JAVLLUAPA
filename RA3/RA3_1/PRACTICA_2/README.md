@@ -1,28 +1,28 @@
 # Práctica 2: ModSecurity (WAF Base)
 
 ### 1. Explicación
-Esta imagen hereda de la **P1 (Hardening de Apache)** y añade una capa de defensa activa mediante un **WAF (Web Application Firewall)**:
+Esta imagen hereda la configuración de la **P1 (Hardening de Apache)** y añade una capa de defensa activa mediante un **WAF (Web Application Firewall)**:
 
 * **Estrategia en cascada:** Se utiliza la imagen `pps10549287/pps-pr1` como base, manteniendo CSP, HSTS y SSL.
 * **ModSecurity:** Instalación y activación del motor en modo bloqueo (`SecRuleEngine On`).
 * **Protección Activa:** El servidor ahora es capaz de interceptar peticiones maliciosas antes de que lleguen a la aplicación.
 
 ### A. Contenido del Dockerfile
-En este paso, el objetivo es dejar de ser "pasivos". Ya tenemos un servidor robusto por fuera (gracias al Hardening de la P1), pero ahora le estamos instalando un WAF (Web Application Firewall) para que analice el tráfico en tiempo real.
+En este paso, el objetivo es dejar de ser "pasivos". Disponemos de un servidor robusto por fuera (gracias al Hardening de la P1), pero además ahora instalamos un WAF (Web Application Firewall) para que analice el tráfico en tiempo real.
 
 1. Evolución sobre la base (Herencia)
-Lo primero es que no empezamos de cero. Heredo la imagen pps-pr1, lo que significa que ya traigo "gratis" toda la configuración de SSL, HSTS y las cabeceras de seguridad que configuré antes. Solo me preocupo de añadir la capa de protección de aplicación.
+Como se ha indicado, partimos con toda la configuración de SSL, HSTS y las cabeceras de seguridad configuradas anteriormente. Únicamente añadimos la capa de protección de aplicación.
 
 2. Instalación del motor de seguridad
-Instalo el módulo libapache2-mod-security2. Este es el motor que nos va a permitir inspeccionar qué viene dentro de las peticiones HTTP (como parámetros de formularios o cookies) para detectar ataques que un firewall normal no vería.
+Instalamos el módulo `libapache2-mod-security2`. Este es el motor que nos va a permitir inspeccionar qué viene dentro de las peticiones HTTP (como parámetros de formularios o cookies) para así detectar ataques que un firewall normal no vería.
 
 3. Del modo "Detección" al modo "Bloqueo"
-Este es el punto más importante de mi script. Por defecto, ModSecurity viene configurado para "solo mirar" (DetectionOnly), lo cual no sirve de mucho en producción.
+Este es el punto más importante del script. Por defecto, ModSecurity viene configurado para "solo mirar" (DetectionOnly), lo cual no sirve de mucho en producción.
 
-Lo que he hecho: He usado sed para cambiar esa directiva a SecRuleEngine On. Ahora, si el firewall detecta algo sospechoso, no solo lo anotará en el log, sino que cortará la conexión inmediatamente.
+Por ello usamos `sed` para cambiar esa directiva a `SecRuleEngine On`. Gracias a esto, si el firewall detecta algo sospechoso, no solo lo anotará en el log, sino que cortará la conexión de forma inmediata.
 
 4. Activación en el servidor
-Finalmente, habilito el módulo en Apache con a2enmod. Como ya tengo los puertos 80 y 443 abiertos y el comando de arranque configurado de la práctica anterior, el contenedor está listo para filtrar ataques desde el segundo uno.
+Finalmente, habilitamos el módulo en Apache con `a2enmod`. Como ya tenemos los puertos 80 y 443 abiertos y el comando de arranque configurado de la práctica anterior, el contenedor está listo para filtrar ataques desde el momento en que sea desplegado.
 
 > [!IMPORTANT]
 > <img width="696" height="365" alt="image" src="https://github.com/user-attachments/assets/19258c5e-cc01-4440-bab7-6ebed65f3463" />
@@ -96,4 +96,8 @@ Para detener y borrar el contenedor de prueba ejecutamos:
 >
 > <img width="490" height="121" alt="image" src="https://github.com/user-attachments/assets/30c034c3-a331-48d1-9230-3183eef70973" />
 
+### Autor
+Javier Lluesma Aparici IES El Caminàs
+
+Puesta en Producción Segura (Especialización Ciberseguridad)
 
