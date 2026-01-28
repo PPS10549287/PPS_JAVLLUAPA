@@ -1,69 +1,69 @@
 # Práctica 1: Hardening de Apache (Capa Base)
 
 ### 1. Explicación
-En esta capa base, se ha configurado un servidor Apache sobre **Debian Bullseye** aplicando medidas iniciales de endurecimiento (*hardening*). El objetivo es reducir la superficie de exposición y mejorar la seguridad de las comunicaciones.
+Esta primera fase ha supuesto la configuración inicial del servidor Apache y la aplicación de medidas iniciales de bastionado (*hardening*) buscando la reducción de la superfície de exposición y una mejora en la seguridad de las comunicaciones.
 
-**Medidas implementadas:**
-* **Ocultación de Servidor:** Se configuró `ServerTokens ProductOnly` y `ServerSignature Off`.
+**Medidas que han sido implementadas:**
+* **Ocultación de Servidor:** Configuración de `ServerTokens ProductOnly` y `ServerSignature Off`.
 * **HSTS (HTTP Strict Transport Security):** Implementación de la cabecera para obligar al navegador a usar HTTPS durante 2 años.
 > [!NOTE]
 > Aunque la cabecera está configurada en esta fase, su efectividad real se completará en la **Práctica 5 (Generar un certificado digital)**, una vez que el servidor cuente con un certificado SSL/TLS válido para establecer el canal cifrado.
 * **CSP (Content-Security-Policy):** Capa de seguridad para prevenir ataques de inyección de datos y XSS.
-* **Deshabilitación de Autoindex:** Se desactivó el listado automático de directorios.
+* **Deshabilitación de Autoindex:** Desactivación del listado automático de directorios.
 * **Seguridad SSL/TLS:** Habilitación del `módulo SSL` y activación de `certificados *snakeoil*`.
 
 ### A. Contenido del Dockerfile
-Este es el punto de partida. Aquí no heredamos de nadie, sino que construimos desde cero sobre Debian para tener el control total de la seguridad desde el primer segundo.
 
 1. Limpieza de superficie de ataque
-Lo primero que hago es instalar Apache y, acto seguido, empiezo a recortar funciones innecesarias.
+En primer lugar instalamos Apache y acto seguido recortamos funciones innecesarias.
 
-El comando clave: Deshabilito el módulo autoindex. Esto es vital porque evita que, si un directorio no tiene un index.html, Apache muestre la lista de archivos al público. Es el primer paso para evitar que un atacante cotillee nuestra estructura de archivos.
+Se deshabilita el módulo autoindex para evitar que en caso de que un directorio no tenga index.html, Apache muestre la lista de archivos al público. Evitando que un atacante pueda inspeccionar nuestra estructura de archivos y recabar información que pueda haber sido revelada.
 
-2. Activación de la "armadura" (SSL y Headers)
-Preparo el servidor para el mundo moderno activando ssl para el cifrado y headers para la privacidad. También activo rewrite por si necesitamos redirigir tráfico de forma inteligente más adelante.
+2. Implementación de controles de cifrado y control de cabeceras (SSL y Headers)
+Habilitamos los módulos `ssl` y `headers` estableciendo un canal de comunicación cifrado mediante HTTPS y permitiendo que el servidor gestione metadatos de seguridad que el navegador del usuario deberá obedecer.
 
 3. Implementación de CSP e HSTS
-Aquí es donde inyecto nuestra política de seguridad personalizada (csp_hsts.conf).
+Implementamos nuestra política de seguridad personalizada (csp_hsts.conf).
 
 CSP (Content Security Policy): Le decimos al navegador qué fuentes de contenido son de confianza, bloqueando de raíz la ejecución de scripts maliciosos externos.
 
 HSTS: Obligamos a los navegadores a recordar que nuestro sitio solo se habla por HTTPS, eliminando el riesgo de que alguien intercepte la conexión en el paso de HTTP a SSL.
 
 4. Configuración del Sitio Seguro
-Para no complicar esta fase inicial con certificados externos, aprovecho los certificados snakeoil (los que vienen por defecto en Debian) y activo el sitio default-ssl. Así garantizamos que, desde el minuto uno, el contenedor ya responde por el puerto 443.
+Como se ha indicado en esta fase inicial aún no configuramos certificados externos por ello, aprovechamos los certificados snakeoil (vienen por defecto en Debian) y activamos el sitio default-ssl. Con esto garantizamos que el contenedor responda por el puerto 443.
 
 > [!IMPORTANT]
 > <img width="999" height="703" alt="image" src="https://github.com/user-attachments/assets/65deb165-65f8-47f2-907c-fe13e50cef73" />
 
 ### B. Contenido del fichero csp_hsts.conf
-Este fichero es el que realmente aplica el bastionado (hardening) a nivel de servidor. No se limita a cifrar, sino que reduce la información que le damos a un posible atacante y controla qué puede ejecutar el navegador.
+Este fichero aplica el bastionado (hardening) a nivel de servidor, reduciendo la información que le damos a un posible atacante y controlando qué puede ejecutar el navegador.
 
-1. El modo "Sigilo" (ServerTokens y Signature)
-Aquí estoy forzando a Apache a que sea discreto.
+1. Configuración de ServerTokens y Signature
+Forzamos a Apache a ser discreto.
 
-ServerTokens ProductOnly: En lugar de decir "Soy Apache versión 2.4.52 ejecutándose en Debian", el servidor solo dirá "Apache".
+ServerTokens ProductOnly: En lugar de indicar "Soy Apache versión 2.4.52 ejecutándose en Debian", el servidor responde únicamente con "Apache".
 
-ServerSignature Off: Elimino el pie de página que aparece en los errores del servidor (como el típico 404).
+ServerSignature Off: Eliminamos el pie de página que aparece en los errores del servidor (como puede ser 404).
 
-Por qué es importante: Si un atacante no sabe exactamente qué versión usas, no puede buscar exploits específicos para tu sistema.
+Esto dificulta a un atacante a la hora de conocer la versión utilizada y buscar así exploits específicos para nuestro sistema.
 
 2. Seguridad en el Transporte (HSTS)
-Uso el módulo de cabeceras para inyectar el Strict-Transport-Security. Le digo a cualquier navegador que visite la web que, durante los próximos 2 años (max-age), la conexión debe ser HTTPS. Esto protege a nuestros usuarios de ataques donde alguien intenta "bajar" su conexión a una versión HTTP no cifrada.
+Hacemos uso del módulo de cabeceras para inyectar el Strict-Transport-Security. Indicándole a cualquier navegador que visite la web que, durante los próximos 2 años (max-age), la conexión debe ser HTTPS.
+Esto permite proteger a nuestros usuarios de ataques de `downgrade` (como SSL Stripping), donde un atacante intenta forzar la conexión a una versión HTTP no cifrada para interceptar los datos.
 
-3. Política de Contenido (CSP)
-Esta es la parte más potente. Defino una Content-Security-Policy para evitar ataques como el Cross-Site Scripting (XSS).
+4. Política de Contenido (CSP)
+Definimos una `Content-Security-Policy` para evitar ataques como el Cross-Site Scripting (XSS).
 
-default-src 'self': Solo permito contenido (scripts, estilos, etc.) que venga de mi propio servidor.
+default-src 'self': Únicamente permitimos contenido (scripts, estilos, etc.) que venga de nuestro propio servidor.
 
-Filtros específicos: He configurado permisos específicos para imágenes y contenido multimedia de fuentes concretas.
+Filtros específicos: Configuramos permisos específicos para imágenes y contenido multimedia de fuentes concretas.
 
-Resultado: Si un atacante intenta inyectar un script desde una web maliciosa, el navegador del usuario lo bloqueará automáticamente porque no está en esta "lista blanca".
+Resultado: Si un atacante intenta inyectar un script desde una web maliciosa, el navegador del usuario lo bloquea automáticamente porque no está en esta "lista blanca".
 
 4. Bloqueo de Listado de Directorios
-Aunque ya deshabilité el módulo en el Dockerfile, aquí refuerzo la seguridad con Options -Indexes para el directorio raíz.
+Aunque ya se deshabilita el módulo en el Dockerfile, reforzamos la seguridad con `Options -Indexes` para el directorio raíz.
 
-Misión: Si alguien entra en una carpeta que no tiene un archivo de inicio, recibirá un error de "Acceso denegado" en lugar de ver una lista de todos nuestros archivos.
+Resultado: Si alguien entra en una carpeta que no tiene un archivo de inicio, recibirá un error de "Acceso denegado" en lugar de ver una lista de todos nuestros archivos.
 
 > [!IMPORTANT]
 > <img width="1160" height="323" alt="image" src="https://github.com/user-attachments/assets/240931a1-3c3f-4e28-838f-7e955d803ae0" />
@@ -128,4 +128,6 @@ Resultado esperado:
 
 <img width="501" height="98" alt="image" src="https://github.com/user-attachments/assets/c26fcece-170c-40a3-954f-673e550ec5fe" />
 
-
+### Autor
+Javier Lluesma Aparici IES El Caminàs
+Puesta en Producción Segura (Especialización Ciberseguridad)
