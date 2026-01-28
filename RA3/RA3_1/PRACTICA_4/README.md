@@ -19,6 +19,7 @@ Heredamos todo el trabajo previo (`Hardening` y `ModSecurity`) y le añadimos el
 Creamos un directorio específico para los logs de bloqueo en `/var/log/mod_evasive`. Le damos permisos de propietario a `www-data` para que Apache pueda escribir los registros de las IPs que decide banear en tiempo real.
 
 **3. El script de testeo (Resolución de problemas)**
+
 Aquí he tenido que ser resolutivo ya que el script original me causaba errores `400 (Bad Request)`. Por ello he programado un pequeño script en Perl (`test.pl`) que inyecta correctamente la cabecera `Host: localhost`. Este script permite simular una inundación de peticiones real y verificar que el módulo responde bloqueando el tráfico sospechoso.
 
 > [!IMPORTANT]
