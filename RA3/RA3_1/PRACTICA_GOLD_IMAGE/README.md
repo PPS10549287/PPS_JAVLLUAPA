@@ -1,7 +1,7 @@
 # Práctica Final: Gold Image Apache (Geekflare)
 
 ## 1. Introducción
-Esta imagen representa supone un bastionado robusto y eficiente en nuestro servidor Apache. Se ha diseñado como una **Golden Image**, una imagen de referencia que consolida todas las capas de seguridad configuradas en las prácticas anteriores, sumando protecciones críticas a nivel de sistema operativo, usuario y protocolo.
+Se ha diseñado como una **Golden Image**, una imagen de referencia que consolida todas las capas de seguridad configuradas en las prácticas anteriores, sumando protecciones críticas a nivel de sistema operativo, usuario y protocolo.
 
 La imagen sigue una **estratia de herencia en cascada**, garantizando que este contenedor final sea el más robusto de toda la serie:
 * **P1 a P4:** Hardening básico, WAF (ModSecurity), Reglas OWASP y protección Anti-DoS (Mod_Evasive).
@@ -14,7 +14,7 @@ De nuevo aprovechamos la base sólida de las prácticas anteriores y añadimos m
 
 ### A. Uso de Archivo de Configuración Externo (`a2enconf`)
 En lugar de inyectar decenas de líneas mediante comandos `echo` en el archivo principal, de nuevo creamos un archivo externo `geekflare-hardening.conf`. 
-Esto permite mantener la herencia de las prácticas anteriores intacta. Al usar `a2enconf`, Apache carga estas nuevas reglas de seguridad de forma modular, permitiendo una auditoría más clara y evitando errores de sintaxis en el archivo maestro `apache2.conf`.
+Manteniendo la herencia de las prácticas anteriores intacta. Al usar `a2enconf`, Apache carga estas nuevas reglas de seguridad de forma modular, permitiendo una auditoría más clara y evitando errores de sintaxis en el archivo maestro `apache2.conf`.
 
 ### B. Uso de `sed` para Variables de Entorno
 Se ha utilizado el comando `sed` exclusivamente para modificar el archivo `/etc/apache2/envvars`.
@@ -29,7 +29,7 @@ Lo primero que hago es crear un usuario y un grupo específicos (apache). Ya que
 
 **2. Introduciendo la configuración "Gold Image"**
 
-Se ha preparado un archivo de configuración (geekflare-hardening.conf) que contiene todas las mejores prácticas de seguridad. Se copia directamente al directorio de configuraciones disponibles de Apache para que sea la base de confianza.
+Se ha preparado un archivo de configuración (geekflare-hardening.conf) que contiene todas las mejores prácticas de seguridad vistas en el blog. Se copia directamente al directorio de configuraciones disponibles de Apache para que sea la base de confianza.
 
 **3. Activando las herramientas de defensa**
 
@@ -100,13 +100,13 @@ Para validar que la Gold Image respeta la herencia de las prácticas anteriores 
 > <img width="1291" height="318" alt="image" src="https://github.com/user-attachments/assets/acd30926-723a-48ff-bd42-0783764a58c3" />
 
 > [!NOTE]
-> **Interpretación:** El resultado del escaneo confirma la arquitectura de Defensa en Profundidad mediante la coexistencia de capas:
+> **Interpretación:** El resultado del escaneo confirma la arquitectura de Defensa en Profundidad mediante la coexistencia de todas las capas:
 
-Capa de Herencia (P1): Se detectan las directivas en security-hardened.conf (ServerTokens ProductOnly y ServerSignature Off), demostrando que el endurecimiento inicial persiste tras todas las fases del proyecto.
+Capa de Herencia (P1): Se detectan las directivas en `security-hardened.conf` (`ServerTokens ProductOnly` y `ServerSignature Off`), demostrando que el endurecimiento inicial persiste tras todas las fases del proyecto.
 
-Capa Gold Image: Se observan las nuevas restricciones en geekflare-hardening.conf (FileETag None y TraceEnable Off), introducidas específicamente en esta fase final.
+Capa Gold Image: Se observan las nuevas restricciones en `geekflare-hardening.conf` (`FileETag None` y `TraceEnable Off`), introducidas específicamente en esta fase final.
 
-Prioridad de Carga: Al utilizar archivos .conf dentro de conf-available, Apache aplica los valores más restrictivos de las capas superiores sobre los valores por defecto del sistema, garantizando la robustez del servidor.
+Prioridad de Carga: Al utilizar archivos .conf dentro de `conf-available`, Apache aplica los valores más restrictivos de las capas superiores sobre los valores por defecto del sistema, garantizando la robustez del servidor.
 
 ### B. Verificación de Identidad y Cabeceras Globales
 Realizamos una petición HTTPS para validar el stack completo de seguridad desde el punto de vista del cliente.
