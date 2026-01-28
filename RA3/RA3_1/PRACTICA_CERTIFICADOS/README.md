@@ -19,7 +19,7 @@ Primero creamos una identidad para nuestro servidor. Usamos openssl para generar
 
 **2. Configuración del sitio seguro**
 
-Copiamos el archivo `default-ssl.conf` para decirle a Apache cómo debe proceder cuando alguien intente entrar de forma segura. Activamos el módulo ssl y le indicamos al servidor que deje de usar la configuración por defecto (000-default.conf) para centrarse en nuestro sitio protegido.
+Copiamos el archivo `default-ssl.conf` para decirle a Apache cómo debe proceder cuando alguien intente entrar de forma segura. Activamos el módulo ssl y le indicamos al servidor que deje de usar la configuración por defecto (`000-default.conf`) para centrarse en nuestro sitio protegido.
 
 > [!IMPORTANT]
 > <img width="827" height="500" alt="image" src="https://github.com/user-attachments/assets/302e8ce5-5d0e-4cd2-9d36-dedb45d0c97e" />
