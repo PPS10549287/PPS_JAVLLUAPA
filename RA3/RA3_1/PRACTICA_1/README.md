@@ -15,9 +15,7 @@ Esta primera fase supone la configuración inicial del servidor Apache y la apli
 ### A. Contenido del Dockerfile
 
 1. Limpieza de superficie de ataque
-En primer lugar instalamos Apache y acto seguido recortamos funciones innecesarias.
-
-Se deshabilita el módulo autoindex para evitar que en caso de que un directorio no tenga index.html, Apache muestre la lista de archivos al público. Evitando que un atacante pueda inspeccionar nuestra estructura de archivos y recabar información que pueda haber sido revelada.
+En primer lugar instalamos Apache y acto seguido recortamos funciones innecesarias. Se deshabilita el módulo autoindex para evitar que en caso de que un directorio no tenga index.html, Apache muestre la lista de archivos al público. Evitando que un atacante pueda inspeccionar nuestra estructura de archivos y recabar información que pueda haber sido revelada.
 
 2. Implementación de controles de cifrado y control de cabeceras (SSL y Headers)
 Habilitamos los módulos `ssl` y `headers` estableciendo un canal de comunicación cifrado mediante HTTPS y permitiendo que el servidor gestione metadatos de seguridad que el navegador del usuario deberá obedecer.
