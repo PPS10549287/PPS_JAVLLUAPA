@@ -1,4 +1,4 @@
-# Práctica Final: Golden Image Apache (Hardening Nivel Industrial)
+# Práctica Final: Gold Image Apache (Geekflare)
 
 ## 1. Introducción
 Esta imagen representa supone un bastionado robusto y eficiente en nuestro servidor Apache. Se ha diseñado como una **Golden Image**, una imagen de referencia que consolida todas las capas de seguridad configuradas en las prácticas anteriores, sumando protecciones críticas a nivel de sistema operativo, usuario y protocolo.
