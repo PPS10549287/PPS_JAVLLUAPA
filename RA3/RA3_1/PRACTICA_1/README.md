@@ -1,7 +1,7 @@
 # Práctica 1: Hardening de Apache (Capa Base)
 
 ### 1. Explicación
-Esta primera fase ha supuesto la configuración inicial del servidor Apache y la aplicación de medidas iniciales de bastionado (*hardening*) buscando la reducción de la superfície de exposición y una mejora en la seguridad de las comunicaciones.
+Esta primera fase supone la configuración inicial del servidor Apache y la aplicación de medidas iniciales de bastionado (*hardening*) buscando la reducción de la superfície de exposición y una mejora en la seguridad de las comunicaciones.
 
 **Medidas que han sido implementadas:**
 * **Ocultación de Servidor:** Configuración de `ServerTokens ProductOnly` y `ServerSignature Off`.
