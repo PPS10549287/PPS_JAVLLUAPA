@@ -28,7 +28,7 @@ CSP (Content Security Policy): Le decimos al navegador qué fuentes de contenido
 HSTS: Obligamos a los navegadores a recordar que nuestro sitio solo se habla por HTTPS, eliminando el riesgo de que alguien intercepte la conexión en el paso de HTTP a SSL.
 
 4. Configuración del Sitio Seguro
-Como se ha indicado en esta fase inicial aún no configuramos certificados externos por ello, aprovechamos los certificados snakeoil (vienen por defecto en Debian) y activamos el sitio default-ssl. Con esto garantizamos que el contenedor responda por el puerto 443.
+Como se ha indicado en esta fase inicial aún no configuramos certificados externos, por ello, aprovechamos los certificados snakeoil (vienen por defecto en Debian) y activamos el sitio default-ssl. Con esto garantizamos que el contenedor responda por el puerto 443.
 
 > [!IMPORTANT]
 > <img width="999" height="703" alt="image" src="https://github.com/user-attachments/assets/65deb165-65f8-47f2-907c-fe13e50cef73" />
