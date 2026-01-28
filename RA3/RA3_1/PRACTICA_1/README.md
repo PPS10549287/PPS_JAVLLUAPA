@@ -14,20 +14,24 @@ Esta primera fase supone la configuración inicial del servidor Apache y la apli
 
 ### A. Contenido del Dockerfile
 
-1. Limpieza de superficie de ataque
+**1. Limpieza de superficie de ataque**
+
 En primer lugar instalamos Apache y acto seguido recortamos funciones innecesarias. Se deshabilita el módulo autoindex para evitar que en caso de que un directorio no tenga index.html, Apache muestre la lista de archivos al público. Evitando que un atacante pueda inspeccionar nuestra estructura de archivos y recabar información que pueda haber sido revelada.
 
-2. Implementación de controles de cifrado y control de cabeceras (SSL y Headers)
+**2. Implementación de controles de cifrado y control de cabeceras (SSL y Headers)**
+
 Habilitamos los módulos `ssl` y `headers` estableciendo un canal de comunicación cifrado mediante HTTPS y permitiendo que el servidor gestione metadatos de seguridad que el navegador del usuario deberá obedecer.
 
-3. Implementación de CSP e HSTS
+**3. Implementación de CSP e HSTS**
+
 Implementamos nuestra política de seguridad personalizada (csp_hsts.conf).
 
 CSP (Content Security Policy): Le decimos al navegador qué fuentes de contenido son de confianza, bloqueando de raíz la ejecución de scripts maliciosos externos.
 
 HSTS: Obligamos a los navegadores a recordar que nuestro sitio solo se habla por HTTPS, eliminando el riesgo de que alguien intercepte la conexión en el paso de HTTP a SSL.
 
-4. Configuración del Sitio Seguro
+**4. Configuración del Sitio Seguro**
+
 Como se ha indicado en esta fase inicial aún no configuramos certificados externos, por ello, aprovechamos los certificados snakeoil (vienen por defecto en Debian) y activamos el sitio default-ssl. Con esto garantizamos que el contenedor responda por el puerto 443.
 
 > [!IMPORTANT]
@@ -36,7 +40,8 @@ Como se ha indicado en esta fase inicial aún no configuramos certificados exter
 ### B. Contenido del fichero csp_hsts.conf
 Este fichero aplica el bastionado (hardening) a nivel de servidor, reduciendo la información que le damos a un posible atacante y controlando qué puede ejecutar el navegador.
 
-1. Configuración de ServerTokens y Signature
+**1. Configuración de ServerTokens y Signature**
+
 Forzamos a Apache a ser discreto.
 
 ServerTokens ProductOnly: En lugar de indicar "Soy Apache versión 2.4.52 ejecutándose en Debian", el servidor responde únicamente con "Apache".
@@ -45,11 +50,13 @@ ServerSignature Off: Eliminamos el pie de página que aparece en los errores del
 
 Esto dificulta a un atacante a la hora de conocer la versión utilizada y buscar así exploits específicos para nuestro sistema.
 
-2. Seguridad en el Transporte (HSTS)
+**2. Seguridad en el Transporte (HSTS)**
+
 Hacemos uso del módulo de cabeceras para inyectar el Strict-Transport-Security. Indicándole a cualquier navegador que visite la web que, durante los próximos 2 años (max-age), la conexión debe ser HTTPS.
 Esto permite proteger a nuestros usuarios de ataques de `downgrade` (como SSL Stripping), donde un atacante intenta forzar la conexión a una versión HTTP no cifrada para interceptar los datos.
 
-4. Política de Contenido (CSP)
+**4. Política de Contenido (CSP)**
+
 Definimos una `Content-Security-Policy` para evitar ataques como el Cross-Site Scripting (XSS).
 
 default-src 'self': Únicamente permitimos contenido (scripts, estilos, etc.) que venga de nuestro propio servidor.
@@ -58,7 +65,8 @@ Filtros específicos: Configuramos permisos específicos para imágenes y conten
 
 Resultado: Si un atacante intenta inyectar un script desde una web maliciosa, el navegador del usuario lo bloquea automáticamente porque no está en esta "lista blanca".
 
-4. Bloqueo de Listado de Directorios
+**5. Bloqueo de Listado de Directorios**
+
 Aunque ya se deshabilita el módulo en el Dockerfile, reforzamos la seguridad con `Options -Indexes` para el directorio raíz.
 
 Resultado: Si alguien entra en una carpeta que no tiene un archivo de inicio, recibirá un error de "Acceso denegado" en lugar de ver una lista de todos nuestros archivos.
