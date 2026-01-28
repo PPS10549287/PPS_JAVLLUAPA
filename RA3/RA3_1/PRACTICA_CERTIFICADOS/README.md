@@ -145,4 +145,7 @@ Verificamos que las capas de las prácticas anteriores siguen activas bajo el t�
 > Resultado esperado:
 > <img width="914" height="118" alt="image" src="https://github.com/user-attachments/assets/8cf748f2-9b73-4c29-9b43-aff3b11f1bab" />
 
+### Autor
+Javier Lluesma Aparici IES El Caminàs
 
+Puesta en Producción Segura (Especialización Ciberseguridad)
