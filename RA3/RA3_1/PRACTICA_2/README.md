@@ -11,12 +11,15 @@ Esta imagen hereda la configuración de la **P1 (Hardening de Apache)** y añade
 En este paso, el objetivo es dejar de ser "pasivos". Disponemos de un servidor robusto por fuera (gracias al Hardening de la P1), pero además ahora instalamos un WAF (Web Application Firewall) para que analice el tráfico en tiempo real.
 
 1. Evolución sobre la base (Herencia)
+
 Como se ha indicado, partimos con toda la configuración de SSL, HSTS y las cabeceras de seguridad configuradas anteriormente. Únicamente añadimos la capa de protección de aplicación.
 
 2. Instalación del motor de seguridad
+
 Instalamos el módulo `libapache2-mod-security2`. Este es el motor que nos va a permitir inspeccionar qué viene dentro de las peticiones HTTP (como parámetros de formularios o cookies) para así detectar ataques que un firewall normal no vería.
 
 3. Del modo "Detección" al modo "Bloqueo"
+
 Este es el punto más importante del script. Por defecto, ModSecurity viene configurado para "solo mirar" (DetectionOnly), lo cual no sirve de mucho en producción.
 
 Por ello usamos `sed` para cambiar esa directiva a `SecRuleEngine On`. Gracias a esto, si el firewall detecta algo sospechoso, no solo lo anotará en el log, sino que cortará la conexión de forma inmediata.
