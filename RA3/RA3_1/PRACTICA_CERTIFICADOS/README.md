@@ -1,41 +1,43 @@
 # Práctica: Instalación de Certificado Digital SSL/TLS en Apache
 
 ### 1. Explicación
-En esta práctica se ha implementado la capa de transporte seguro (SSL/TLS) sobre la infraestructura ya blindada en las prácticas anteriores, culminando la arquitectura de "Defensa en Profundidad":
+En esta práctica se ha implementa la capa de transporte seguro (SSL/TLS) sobre la infraestructura ya blindada en las prácticas anteriores:
 
 * **Estrategia en cascada:** Basada en la imagen `pps10549287/pps-pr4`, integrando Hardening (P1), ModSecurity (P2), OWASP CRS (P3) y protección DoS (P4).
 * **Activación de HSTS:** Con la instalación del certificado SSL/TLS, la cabecera `Strict-Transport-Security` configurada previamente pasa a ser funcional, obligando a los navegadores a utilizar exclusivamente el puerto 443.
 > [!IMPORTANT]
-> **Cierre del ciclo de Hardening (P1):** La implementación de este certificado SSL/TLS es el requisito técnico indispensable para que la cabecera **HSTS (HTTP Strict Transport Security)**, configurada originalmente en la Práctica 1, sea efectiva. Con este paso, el servidor no solo solicita conexiones seguras, sino que el navegador tiene la infraestructura necesaria para acatar dicha política de seguridad.
+> **Cierre del ciclo de Hardening (P1):** La implementación de este certificado SSL/TLS es el requisito técnico indispensable para que la cabecera **HSTS (`HTTP Strict Transport Security`)**, configurada originalmente en la Práctica 1, sea efectiva. Con este paso, el servidor no solo solicita conexiones seguras, sino que el navegador tiene la infraestructura necesaria para acatar dicha política de seguridad.
 * **Cifrado SSL/TLS:** Generación de un certificado X.509 autofirmado de 2048 bits mediante OpenSSL, configurado para el dominio `www.midominioseguro.com`.
-* **Redirección Forzosa (HSTS):** Configuración de Apache para redirigir permanentemente todo el tráfico inseguro (HTTP/80) hacia el canal cifrado (HTTPS/443), garantizando la integridad y confidencialidad de los datos.
+* **Redirección Forzosa (`HSTS`):** Configuración de Apache para redirigir permanentemente todo el tráfico inseguro (`HTTP/80`) hacia el canal cifrado (`HTTPS/443`), garantizando la integridad y confidencialidad de los datos.
 
 ### A. Contenido del Dockerfile
-En este punto, he tomado la base de la práctica anterior (que ya traía el WAF y el anti-DDoS) y me he centrado en asegurar que toda la comunicación sea privada y esté cifrada.
+En este punto, tomando de nuevo la base de la práctica anterior (que ya traía el WAF y el anti-DDoS) nos centramos en asegurar que toda la comunicación sea privada y esté cifrada.
 
-1. Generación de identidad (Certificado SSL)
-Lo primero que hago es crear un "DNI" para nuestro servidor. Uso openssl para generar un certificado autofirmado de 2048 bits. Con esto, habilitamos el cifrado RSA para que la información que viaja entre el usuario y el servidor no pueda ser leída por terceros.
+**1. Generación de identidad (`Certificado SSL`)**
 
-2. Configuración del sitio seguro
-Copio el archivo default-ssl.conf para decirle a Apache exactamente cómo debe comportarse cuando alguien intente entrar de forma segura. Activo el módulo ssl y le indico al servidor que deje de usar la configuración por defecto (000-default.conf) para centrarse en nuestro sitio protegido.
+Primero creamos una identidad para nuestro servidor. Usamos openssl para generar un certificado autofirmado de 2048 bits, habilitando el cifrado RSA para que la información que viaja entre el usuario y el servidor no pueda ser interceptada y leída por terceros.
+
+**2. Configuración del sitio seguro**
+
+Copiamos el archivo `default-ssl.conf` para decirle a Apache cómo debe proceder cuando alguien intente entrar de forma segura. Activamos el módulo ssl y le indicamos al servidor que deje de usar la configuración por defecto (000-default.conf) para centrarse en nuestro sitio protegido.
 
 > [!IMPORTANT]
 > <img width="827" height="500" alt="image" src="https://github.com/user-attachments/assets/302e8ce5-5d0e-4cd2-9d36-dedb45d0c97e" />
 
 ### B. Contenido de default-ssl.conf
-Este archivo es el cerebro del tráfico web y se divide en dos grandes misiones:
+Esta configuración actúa como manual para el tráfico cifrado e identidad del servidor y tiene los siguientes objetivos:
 
-Misión A: Redirección Forzosa (Puerto 80)
-He configurado un bloque que escucha por el puerto 80 (HTTP normal). Su única función es "cazar" a cualquiera que entre sin seguridad y mandarlo inmediatamente al puerto 443. Nadie se queda en el lado inseguro; es una redirección permanente.
+**1. Redirección Forzosa (`Puerto 80`)**
 
-Misión B: El búnker HTTPS (Puerto 443)
-Aquí es donde ocurre la magia de la seguridad:
+Configuramos un bloque que escucha por el puerto 80 (`HTTP normal`). Su función es "cazar" a cualquiera que entre sin seguridad y redireccionarlo inmediatamente al puerto 443. Esto conlleva que nadie permanezca en el lado inseguro, debido a que la redirección es permanente.
 
-Encendido del motor SSL: Activo el SSLEngine y le digo dónde están guardadas las llaves que generamos antes.
+**2. HTTPS (`Puerto 443`)**
 
-HSTS (Seguridad Persistente): He añadido una cabecera de seguridad muy potente. El Strict-Transport-Security le dice al navegador del usuario: "A partir de ahora, aunque intentes entrar por HTTP, ni me preguntes; conecta siempre por HTTPS durante los próximos dos años". Esto evita ataques de degradación de SSL.
+Habilitar SSL: Activamos el `SSLEngine` y le decimos dónde se almacenan las llaves generadas.
 
-Entorno Seguro: Finalmente, aseguro que incluso si ejecutamos scripts (PHP o CGI), estos se manejen bajo el estándar de variables de entorno seguras de SSL.
+HSTS (`Seguridad Persistente`): Añadimos una cabecera de segurida robusta. El `Strict-Transport-Security` le indica al navegador del usuario que no intente conectar por HTTP y conecte siempre por HTTPS durante los próximos dos años, evitando así ataques de degradación de SSL.
+
+Finalmente, aseguramos que incluso si se ejecutan scripts (`PHP` o `CGI`), sean manejados bajo el estándar de variables de entorno seguras de SSL.
 
 > [!IMPORTANT]
 > <img width="897" height="779" alt="image" src="https://github.com/user-attachments/assets/6647c8eb-5fd0-44cc-a0ab-2842672cf589" />
@@ -43,6 +45,7 @@ Entorno Seguro: Finalmente, aseguro que incluso si ejecutamos scripts (PHP o CGI
 ### 2. Guía de Despliegue
 
 **Paso 1: Configuración del entorno local (Host)**
+
 Para que el navegador y las herramientas de test reconozcan el dominio, es necesario mapear la IP local en el archivo `/etc/hosts` de la máquina anfitriona:
 
 `127.0.0.1  www.midominioseguro.com`
@@ -56,10 +59,12 @@ Para que el navegador y las herramientas de test reconozcan el dominio, es neces
 `docker pull pps10549287/pps-pr-cert:latest`
 
 **Paso 3: Lanzar el contenedor**
+
 Mapeamos el puerto 8080 para HTTP y el 8081 para HTTPS (puerto 443 interno):
 `docker run -d --name pps-pr-cert-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr-cert:latest`
 
 **Paso 4: Visualizar contenedor activo**
+
 Comprobamos que el contenedor se encuentra corriendo y está operativo:
 
 `docker ps`
@@ -67,6 +72,7 @@ Comprobamos que el contenedor se encuentra corriendo y está operativo:
 ### 3. Validación y Auditoría
 
 **A. Verificación de Redirección HTTP -> HTTPS**
+
 Comprobamos que el servidor rechaza conexiones inseguras y fuerza el salto al puerto seguro:
 
 `curl -I http://localhost:8080`
@@ -80,6 +86,7 @@ Comprobamos que el servidor rechaza conexiones inseguras y fuerza el salto al pu
 > *El código **301 Moved Permanently** hacia https://www.midominioseguro.com/ confirma la política de transporte seguro.*
 
 **B. Inspección técnica del Certificado (Issuer)**
+
 Validamos que el certificado contiene los datos de identidad configurados durante la construcción (Castellón, Seguridad, etc.):
 
 `curl -Iv -k https://localhost:8081 2>&1 | grep "issuer"`
@@ -92,6 +99,7 @@ Validamos que el certificado contiene los datos de identidad configurados durant
 > *La línea `issuer: C=ES; ST=Castellon; L=Castellon; O=Seguridad; CN=www.midominioseguro.com` confirma la autoría del certificado.*
 
 **C. Validación Visual en Navegador**
+
 Al acceder a `https://www.midominioseguro.com:8081`, se verifica el aviso de seguridad por certificado autofirmado y se inspeccionan los detalles:
 
 > [!IMPORTANT]
@@ -114,6 +122,7 @@ Al acceder a `https://www.midominioseguro.com:8081`, se verifica el aviso de seg
 > Página web en funcionamiento
 
 **D. Persistencia de Seguridad (WAF + DoS + Hardening)**
+
 Verificamos que las capas de las prácticas anteriores siguen activas bajo el túnel SSL:
 
 `curl -I -k "https://localhost:8081/?exec=/bin/bash"`
