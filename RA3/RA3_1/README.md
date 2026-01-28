@@ -8,15 +8,15 @@ A lo largo de las distintas fases, se han integrado medidas de seguridad crític
 
 Para el desarrollo de este proyecto se han utilizado recursos oficiales, documentación técnica y guías de referencia en ciberseguridad: 
 
-Repositorio Oficial de Imágenes (Docker Hub): 
+* **Repositorio Oficial de Imágenes (Docker Hub):** 
 
 Perfil de Usuario pps10549287 - Almacenamiento y registro de las imágenes generadas en cada práctica. 
 
-Repositorio de Código Fuente (GitHub): 
+* **Repositorio de Código Fuente (GitHub):** 
 
 PPS_JAVLLUAPA - Código y Dockerfiles - Documentación técnica y scripts de construcción. 
 
-Documentación de Referencia (Hardening y Seguridad Web): 
+* **Documentación de Referencia (Hardening y Seguridad Web):** 
 
 Segarra, P. (2021). Hardening de Servidor Web. Ciberseguridad-PePS 
 
@@ -24,7 +24,7 @@ Segarra, P. (2020). Implementación de SSL/TLS. Ciberseguridad-PePS
 
 Geekflare. (2023). Apache Web Server Hardening & Security Guide. Geekflare Cybersecurity 
 
-Otras herramientas: Documentación oficial de Apache HTTP Server, ModSecurity Core Rule Set (CRS) y manuales de Docker Engine. 
+* **Otras herramientas: Documentación oficial de Apache HTTP Server, ModSecurity Core Rule Set (CRS) y manuales de Docker Engine.** 
 
 # Conclusión 
 
