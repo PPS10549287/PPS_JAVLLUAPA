@@ -47,11 +47,13 @@ Este repositorio contiene un bastionado completo de seguridad activa y probada e
 `docker pull pps10549287/pps-pr4:latest`
 
 **Paso 2: Lanzar el contenedor**
+
 Desplegamos el servicio mapeando los puertos de seguridad (8080 para HTTP y 8081 para HTTPS):
 
 `docker run -d --name pps-pr4-javlluapa -p 8080:80 -p 8081:443 pps10549287/pps-pr4:latest`
 
 **Paso 3: Visualizar contenedor activo**
+
 Comprobamos que el contenedor se encuentra corriendo y está operativo:
 
 `docker ps`
@@ -61,6 +63,7 @@ Comprobamos que el contenedor se encuentra corriendo y está operativo:
 Para demostrar la efectividad de la protección anti-DoS y la persistencia de las capas anteriores, realizamos las siguientes pruebas:
 
 **A. Ejecución del script de prueba de carga (Perl)**
+
 Utilizamos el script de prueba localizado en `/root/test.pl` que simula una inundación de peticiones HTTP/1.1:
 
 `docker exec pps-pr4-javlluapa perl /root/test.pl`
@@ -87,6 +90,7 @@ Comprobamos que el módulo ha creado un registro físico de la IP bloqueada en e
 > *La existencia del archivo `dos-127.0.0.1` con el propietario `www-data` confirma que el motor de evasión tiene permisos de escritura y está registrando los ataques detectados.*
 
 **C. Prueba de carga masiva con Apache Bench (ab)**
+
 Para generar un informe técnico de denegación de servicio, lanzamos 100 peticiones concurrentes desde el host:
 
 `ab -n 100 -c 5 http://localhost:8080/`
@@ -105,6 +109,7 @@ Para generar un informe técnico de denegación de servicio, lanzamos 100 petici
 > * **Análisis del informe:** Se observa que de las 100 peticiones realizadas, **90 fueron rechazadas (Non-2xx responses)**. Esto demuestra que tras las primeras peticiones exitosas, el módulo `mod_evasive` identificó el exceso de tráfico y activó el bloqueo 403, limitando el consumo de recursos del servidor de forma efectiva.
 
 **D. Persistencia de capas de seguridad (Heredabilidad de P1, P2 y P3)**
+
 Comprobamos que las reglas de OWASP siguen filtrando ataques de inyección (XSS) a pesar de la nueva capa de protección DoS:
 
 `curl -I "http://localhost:8080/?test=<script>alert(1)</script>"`
