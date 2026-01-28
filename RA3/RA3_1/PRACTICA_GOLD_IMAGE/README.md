@@ -1,7 +1,7 @@
 # Práctica Final: Golden Image Apache (Hardening Nivel Industrial)
 
 ## 1. Introducción
-Esta imagen representa la culminación del proyecto de seguridad en servidores web. Se ha diseñado como una **Golden Image**, una imagen de referencia que consolida todas las capas de seguridad configuradas en las prácticas anteriores, sumando protecciones críticas a nivel de sistema operativo, usuario y protocolo.
+Esta imagen representa supone un bastionado robusto y eficiente en nuestro servidor Apache. Se ha diseñado como una **Golden Image**, una imagen de referencia que consolida todas las capas de seguridad configuradas en las prácticas anteriores, sumando protecciones críticas a nivel de sistema operativo, usuario y protocolo.
 
 La imagen sigue una **estratia de herencia en cascada**, garantizando que este contenedor final sea el más robusto de toda la serie:
 * **P1 a P4:** Hardening básico, WAF (ModSecurity), Reglas OWASP y protección Anti-DoS (Mod_Evasive).
@@ -10,48 +10,52 @@ La imagen sigue una **estratia de herencia en cascada**, garantizando que este c
 
 ## 2. Justificación Técnica de la Implementación
 
-Para esta fase final, se ha optado por un enfoque de **"Cirugía y Modularidad"** en lugar de sustitución completa:
+De nuevo aprovechamos la base sólida de las prácticas anteriores y añadimos módulos específicos de seguridad que garanticen un despliege incremental y controlado:
 
 ### A. Uso de Archivo de Configuración Externo (`a2enconf`)
-En lugar de inyectar decenas de líneas mediante comandos `echo` en el archivo principal, se ha creado el archivo `geekflare-hardening.conf`. 
-* **Razón:** Esto permite mantener la herencia de las prácticas anteriores intacta. Al usar `a2enconf`, Apache carga estas nuevas reglas de seguridad de forma modular, permitiendo una auditoría más clara y evitando errores de sintaxis en el archivo maestro `apache2.conf`.
+En lugar de inyectar decenas de líneas mediante comandos `echo` en el archivo principal, de nuevo creamos un archivo externo `geekflare-hardening.conf`. 
+Esto permite mantener la herencia de las prácticas anteriores intacta. Al usar `a2enconf`, Apache carga estas nuevas reglas de seguridad de forma modular, permitiendo una auditoría más clara y evitando errores de sintaxis en el archivo maestro `apache2.conf`.
 
 ### B. Uso de `sed` para Variables de Entorno
 Se ha utilizado el comando `sed` exclusivamente para modificar el archivo `/etc/apache2/envvars`.
-* **Razón:** En distribuciones basadas en Debian, el usuario que ejecuta Apache se define en este archivo. El uso de `sed` es la forma más eficiente de realizar este cambio de identidad de forma persistente sin tener que sobrescribir el archivo completo del sistema.
+La justificación se debe a que en distribuciones basadas en Debian, el usuario que ejecuta Apache se define en este archivo. El uso de `sed` es la forma más eficiente de realizar este cambio de identidad de forma persistente sin tener que sobrescribir el archivo completo del sistema.
 
 ### C. Contenido del Dockerfile
 
 Básicamente, lo que he montado aquí es un proceso de Hardening para asegurar que nuestra instancia de Apache no salga a producción con la configuración por defecto, que suele ser bastante insegura.
 
-1. El principio de "Menor Privilegio"
-Lo primero que hago es crear un usuario y un grupo específicos (apache). Nunca queremos que el servicio corra como root. Si alguien consigue entrar, se va a quedar encerrado en un usuario sin permisos de administrador, lo que nos da una capa de protección vital.
+**1. El principio de "Menor Privilegio"**
+Lo primero que hago es crear un usuario y un grupo específicos (apache). Ya que no queremos que el servicio corra como root. Si alguien consiguiése acceder, quedaría enjaulado como un usuario sin permisos de administrador, asegurando una óptima protección de nuestro servidor.
 
-2. Inyectando nuestra "Gold Image"
-He preparado un archivo de configuración (geekflare-hardening.conf) que contiene todas las mejores prácticas de seguridad. Lo copio directamente al directorio de configuraciones disponibles de Apache para que sea nuestra base de confianza.
+**2. Introduciendo la configuración "Gold Image"**
 
-3. Activando las herramientas de defensa
-Aquí activo un par de módulos que son fundamentales:
+Se ha preparado un archivo de configuración (geekflare-hardening.conf) que contiene todas las mejores prácticas de seguridad. Se copia directamente al directorio de configuraciones disponibles de Apache para que sea la base de confianza.
 
-Rewrite: Para gestionar redirecciones (como forzar todo a HTTPS).
+**3. Activando las herramientas de defensa**
 
-Headers: Para inyectar cabeceras de seguridad que protejan al usuario de ataques como XSS o Clickjacking. Luego, con a2enconf, dejo activa nuestra configuración de "Gold Image".
+Aquí se activan un par de módulos fundamentales:
 
-4. Forzando al sistema a usar nuestro usuario
-Apache tiene un archivo de variables de entorno (envvars) donde define quién lo ejecuta. Uso un par de comandos sed para buscar esas variables y reemplazarlas por nuestro nuevo usuario apache. Así me aseguro de que, al arrancar, el servidor no intente usar el usuario por defecto de la distro.
+`Rewrite`: Para gestionar redirecciones (como forzar todo a HTTPS).
 
-5. Ajuste fino de permisos
-Finalmente, cierro el círculo con la gestión de archivos:
+`Headers`: Para inyectar cabeceras de seguridad que protejan al usuario final de ataques como XSS o Clickjacking. Luego, con a2enconf, dejamos activa nuestra configuración de "Gold Image".
 
-Le doy la propiedad al usuario apache de lo que realmente necesita tocar: los logs y la carpeta de la web.
+**4. Forzando al sistema a usar nuestro usuario**
 
-Restrinjo el acceso a la carpeta de configuración (/etc/apache2/) con un chmod 750 para que nadie que no deba estar ahí pueda husmear o modificar archivos críticos.
+Apache tiene un archivo de variables de entorno (`envvars`) donde se define quién lo ejecuta. Hacemos uso de un par de comandos `sed` para buscar esas variables y reemplazarlas por nuestro nuevo usuario apache. Asegurando que, al arrancar, el servidor no intente usar el usuario por defecto.
+
+**5. Ajuste de permisos**
+
+Finalmente, cerramos con la gestión de archivos:
+
+Damos permisos de propietario al usuario apache de lo que realmente necesita tocar: los logs y la carpeta de la web.
+
+Restrinjimos el acceso a la carpeta de configuración (`/etc/apache2/`) con un `chmod 750` para que nadie pueda leer o modificar archivos críticos.
 
 > [!IMPORTANT]
 > <img width="984" height="550" alt="image" src="https://github.com/user-attachments/assets/e0f3d169-53e3-4029-86c8-2a2f8534a2ec" />
 
 ## 3. El Archivo Externo: `geekflare-hardening.conf`
-Este archivo actúa como el "escudo final" del servidor. Su función es centralizar las directivas de seguridad avanzada que no se cubrieron en fases previas:
+Este archivo de configuración centraliza las directivas de seguridad avanzada que no se cubrieron en fases previas:
 
 * **Hardening de Protocolo:** Incluye `TraceEnable Off` y `FileETag None` para evitar ataques de Cross-Site Tracing y fugas de información del inodo del sistema.
 * **Gestión de Timeouts:** Reduce el `Timeout` a 60 segundos para mitigar ataques de denegación de servicio de conexión lenta (Slow Loris).
@@ -100,9 +104,9 @@ Para validar que la Gold Image respeta la herencia de las prácticas anteriores 
 
 Capa de Herencia (P1): Se detectan las directivas en security-hardened.conf (ServerTokens ProductOnly y ServerSignature Off), demostrando que el endurecimiento inicial persiste tras todas las fases del proyecto.
 
-Capa Gold Image: Se observan las nuevas restricciones en gold-image-hardening.conf (FileETag None y TraceEnable Off), inyectadas específicamente en esta fase final.
+Capa Gold Image: Se observan las nuevas restricciones en geekflare-hardening.conf (FileETag None y TraceEnable Off), introducidas específicamente en esta fase final.
 
-Prioridad de Carga: Al utilizar archivos .conf dentro de conf-available, Apache aplica los valores más restrictivos de las capas superiores sobre los valores por defecto del sistema, garantizando un servidor totalmente "mudo" y blindado.
+Prioridad de Carga: Al utilizar archivos .conf dentro de conf-available, Apache aplica los valores más restrictivos de las capas superiores sobre los valores por defecto del sistema, garantizando la robustez del servidor.
 
 ### B. Verificación de Identidad y Cabeceras Globales
 Realizamos una petición HTTPS para validar el stack completo de seguridad desde el punto de vista del cliente.
@@ -114,10 +118,10 @@ Realizamos una petición HTTPS para validar el stack completo de seguridad desde
 > <img width="1087" height="294" alt="image" src="https://github.com/user-attachments/assets/e0c6196a-8f1e-42af-a8ef-3101b1b1c51b" />
 
 > [!NOTE]
-> **Interpretación:** El servidor responde con el banner oculto (`Server: Apache`), el mecanismo de transporte seguro activo (`Strict-Transport-Security`) y las nuevas protecciones contra Clickjacking y XSS. Se confirma que el servidor es "mudo" ante intentos de reconocimiento de versión.
+> **Interpretación:** El servidor responde con el banner oculto (`Server: Apache`), el mecanismo de transporte seguro activo (`Strict-Transport-Security`) y las nuevas protecciones contra Clickjacking y XSS. Se confirma que el servidor no responde ante intentos de reconocimiento de versión.
 
 ### C. Verificación de Usuario No Privilegiado
-Auditamos los procesos en ejecución para asegurar que el compromiso de un hilo de ejecución no otorgue acceso de superusuario al atacante.
+Auditamos los procesos en ejecución para asegurar que un hilo de ejecución comprometido no otorgue acceso de root al atacante.
 
 **Comando:** `docker exec pps-pr-gold-javlluapa ps -ef | grep apache`
 
@@ -126,10 +130,10 @@ Auditamos los procesos en ejecución para asegurar que el compromiso de un hilo 
 > <img width="956" height="125" alt="image" src="https://github.com/user-attachments/assets/020215c4-c64f-4edb-9415-bfbe08cc5681" />
 
 > [!NOTE]
-> **Interpretación:** Se observa cómo el proceso padre corre como `root` para gestionar los sockets de red, mientras que los procesos trabajadores (workers) que procesan el tráfico externo han cambiado su identidad al usuario **apache**, cumpliendo el principio de mínimo privilegio.
+> **Interpretación:** Se observa cómo el proceso padre corre como `root` para gestionar los sockets de red, mientras que los procesos trabajadores (`workers`) que procesan el tráfico externo han cambiado su identidad al usuario **apache**, cumpliendo el principio de mínimo privilegio.
 
 ### D. Persistencia de la Herencia (WAF y SSL)
-Validamos que las defensas activas de las prácticas anteriores (ModSecurity) siguen operando correctamente tras el endurecimiento del sistema.
+Validamos que las defensas activas de las prácticas anteriores (`ModSecurity`) siguen operando correctamente tras el endurecimiento del sistema.
 
 **Comando (Simulación de ataque):**
 `curl -I -k "https://www.midominioseguro.com:8081/?exec=/bin/bash"`
@@ -146,4 +150,6 @@ Validamos que las defensas activas de las prácticas anteriores (ModSecurity) si
 `docker pull pps10549287/pps-pr-gold:latest`
 
 ## 7. Conclusión
-Este proyecto demuestra una arquitectura de **Defensa en Profundidad** real. Cada práctica ha añadido una capa de blindaje que la Golden Image final ha consolidado, resultando en un servidor Apache optimizado para resistir ataques modernos.
+Este proyecto demuestra una arquitectura de **Defensa en Profundidad** real. Cada práctica ha añadido una capa de robustez que la Gold Image final ha consolidado, resultando en un servidor Apache optimizado para resistir ataques modernos.
+
+
